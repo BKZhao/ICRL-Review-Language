@@ -4,9 +4,7 @@ This repository contains the manuscript, figure-generation scripts, derived data
 
 ## Public repository URL
 
-Planned repository URL:
-
-`https://github.com/BKZhao/iclr-review-language-study`
+`https://github.com/BKZhao/ICRL-Review-Language`
 
 ## Chinese guide
 
@@ -45,10 +43,10 @@ This rebuilds the derived outputs, regenerates the figures, and compiles the man
 
 ## Suggested data-availability sentence
 
-After creating the public repository, replace the placeholder URL in the manuscript and project notes with:
+Project repository URL:
 
-`https://github.com/BKZhao/iclr-review-language-study`
+`https://github.com/BKZhao/ICRL-Review-Language`
 
 Suggested sentence:
 
-`Data, code, figures, and derived outputs for this study are available at https://github.com/BKZhao/iclr-review-language-study. The underlying review records come from OpenReview, using the ICLR group page and the OpenReview API.`
+`Data, code, figures, and derived outputs for this study are available at https://github.com/BKZhao/ICRL-Review-Language. The underlying review records come from OpenReview, using the ICLR group page and the OpenReview API.`

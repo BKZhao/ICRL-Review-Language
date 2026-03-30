@@ -5,20 +5,20 @@
 \setcounter{table}{0}
 \renewcommand{\thefigure}{A\arabic{figure}}
 \setcounter{figure}{0}
-\section*{Appendix: Measurement and Data Validation}
-This appendix extends the main text with report-style tables and diagnostic figures covering raw-archive parsing, measurement completeness, bridge analyses between descriptive and matched layers, and legacy diagnostics from the earlier derived-table workflow.
+\section*{Appendix: Archive Reconstruction and Measurement Checks}
+This appendix documents the reconstruction of the raw ICLR archive and the measurement checks that bound interpretation of the main-text results. It reports archive coverage, parser completeness, field harmonization, and measurement infrastructure before turning to observational, matched-sample, and legacy supplementary materials.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_measurement_summary.pdf}
-\caption{Measurement and archive-validation diagnostics. \textbf{A}, yearly paper and review counts in the harmonized archive. \textbf{B}, confidence parsing, keyword coverage, and positive-review prevalence by year; the clearest discontinuity is the loss of comparable confidence parsing in 2020. \textbf{C}, the distribution of reviews per paper, showing that the archive is concentrated around three to four reviews per submission. \textbf{D}, review-length distributions by final decision. Taken together, these panels document the scale of the archive and the practical boundaries of the measurement layer before any modeling begins.}
+\caption{Archive coverage and measurement checks for the reconstructed ICLR review corpus. \textbf{A}, yearly paper and review counts in the harmonized archive. \textbf{B}, confidence parsing, keyword coverage, and positive-review prevalence by year; the most visible discontinuity is the loss of a directly comparable confidence field in 2020. \textbf{C}, the distribution of reviews per paper, showing that most submissions receive three to four reviews. \textbf{D}, review-length distributions by final decision. Together, the panels establish the scale of the archive and the practical measurement boundaries within which the main-text models should be interpreted.}
 \label{fig:app:measurement}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_feature_correlations.pdf}
-\caption{Paper-level correlation structure for language measures, score proxies, and review-structure covariates. The matrix shows that sentiment co-moves with reviewer score and, more modestly, with review length, whereas toxicity is only weakly related to most other observables. This matters for interpretation: the language measures do not float outside the rest of the evaluation record, but are embedded in the same broader profile that also contains scores, confidence, and review structure.}
+\caption{Paper-level correlation structure linking language measures to the broader evaluation profile. The matrix shows that sentiment co-moves strongly with reviewer score and more modestly with review length, whereas toxicity is only weakly related to most other observables. The inferential point is that review language does not float outside the rest of the archive: it is embedded in the same profile that also contains scores, confidence, and review structure.}
 \label{fig:app:correlations}
 \end{figure}
 
@@ -28,7 +28,7 @@ This appendix extends the main text with report-style tables and diagnostic figu
 \scriptsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Raw-archive parsing diagnostics by year. The builder retains raw strings, parsed numeric fields, and parse-success flags for ratings, confidence, and final decisions. The table makes visible that parsing succeeds nearly completely for ratings and decisions across all years, while confidence is the one clear year-specific discontinuity because the 2020 raw export does not preserve a comparable confidence field.}
+\caption{Raw-archive parsing diagnostics by year. The builder retains raw strings, parsed numeric fields, and parse-success flags for ratings, confidence, and final decisions. Parsing succeeds nearly completely for scores and decisions across all years, whereas confidence is the clearest year-specific break because the 2020 export does not preserve a directly comparable field.}
 \label{tab:app:harmonization}
 \begin{tabular}{rrrrrrrr}
 \toprule
@@ -51,7 +51,7 @@ Year & Submissions & Reviews & Final decisions & Acceptance rate & Score parse r
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Year-specific score and review-text sources used in the harmonized raw-archive parser. The table documents the exact field substitutions needed to make the archive comparable across years, especially the shift from \texttt{rating} to \texttt{recommendation} and the richer multi-field review text available in 2022--2023.}
+\caption{Year-specific score and review-text sources used in the harmonized raw-archive parser. The table records the field substitutions required to make the archive comparable across years, especially the shift from \texttt{rating} to \texttt{recommendation} and the richer multi-field review text available in 2022--2023.}
 \label{tab:app:fieldmap}
 \begin{tabular}{rll}
 \toprule
@@ -74,7 +74,7 @@ Year & Score field & Review-text field \\
 \scriptsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Measurement summary by year. The table reports archive scale, positive recommendation prevalence, parser completeness, manuscript-metadata missingness, and average review length. It shows that the reconstructed archive is large and fairly balanced across years, while also making clear that 2022 uses shorter review-text fields on average and that keyword coverage is imperfect but broadly usable for topic-proxy construction.}
+\caption{Measurement summary by year. The table reports archive scale, positive recommendation prevalence, parser completeness, manuscript-metadata missingness, and average review length. It shows that the reconstructed archive is large and broadly comparable across years, while also clarifying that 2022 uses shorter review-text fields on average and that keyword coverage, though imperfect, remains usable for topic-proxy construction.}
 \label{tab:app:measurementyear}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{rrrrrrrr}
@@ -99,7 +99,7 @@ Year & Submissions & Reviews & Acceptance rate & Positive recommendation share &
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Legacy lexicon inventory from the earlier exploratory workflow. These resources are preserved as measurement diagnostics rather than as the manuscript's source of truth. Including them here clarifies what the current rebuild inherited, checked, and simplified when moving from the older exploratory pipeline to the present raw-archive package.}
+\caption{Legacy lexicon inventory carried forward from the earlier exploratory workflow. These resources are retained as measurement background rather than as the manuscript's source of truth. Including them here clarifies what the archive-first rebuild inherited, audited, and simplified.}
 \label{tab:app:lexicon}
 \begin{tabular}{lr}
 \toprule
@@ -125,27 +125,27 @@ Hedging phrases & 16 \\
 
 \FloatBarrier
 \vspace{0.6em}
-\section*{Appendix: Bridge and Observational Diagnostics}
-The next set of appendix materials expands the observational story by showing how descriptive language gaps behave inside score bins and how the paper-level sentiment association varies across topic-cluster proxies.
+\section*{Appendix: Descriptive Stability and Conditional Diagnostics}
+The next set of appendix materials expands the main observational story. It shows how accepted-minus-rejected language gaps behave across years and score regions, and how the conditional paper-level sentiment association varies across disagreement groups and topic-cluster proxies.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{figure3_temporal_stability.pdf}
-\caption{Temporal stability of the descriptive language gap. Accepted-minus-rejected differences are shown separately for sentiment and politeness in each conference year, with pooled summaries shown below the year-specific estimates. The direction of the gap does not reverse in any year for either measure, which is why the main text describes this descriptive pattern as the most stable regularity in the paper.}
+\caption{Temporal stability of the descriptive language gap. Accepted-minus-rejected differences are shown separately for sentiment and politeness in each conference year, with pooled summaries below the year-specific estimates. The sign of the gap does not reverse in any year for either measure, which is why the main text treats descriptive sentiment and politeness alignment with acceptance as the most stable empirical regularity in the study.}
 \label{fig:app:temporal}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_score_bridge.pdf}
-\caption{Bridge analysis linking the full-sample descriptive layer to the matched borderline layer. \textbf{A}, acceptance rates across within-year mean-score deciles, with bar color tracking the decision mix of each bin. \textbf{B}, accepted-minus-rejected sentiment gaps within the same score bins. The key pattern is attenuation in the middle of the score distribution, where accepted and rejected papers overlap most plausibly; by contrast, the largest raw differences occur in regions where decisions are already nearly deterministic.}
+\caption{Bridge analysis linking the full-sample descriptive layer to the matched borderline layer. \textbf{A}, acceptance rates across within-year mean-score deciles, with bar color tracking the decision mix of each bin. \textbf{B}, accepted-minus-rejected sentiment gaps within the same score bins. The central pattern is attenuation in the middle of the score distribution, where accepted and rejected papers overlap most plausibly; the largest raw differences occur instead in regions where decisions are already close to deterministic.}
 \label{fig:app:bridge}
 \end{figure}
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_topic_heterogeneity.pdf}
-\caption{Topic-cluster heterogeneity in the paper-level sentiment association. Topic controls are keyword-based clusters and should be interpreted as noisy topical proxies rather than official research areas. Most topic-specific estimates are imprecise and none reveals an obvious subfield in which the conditional paper-level sentiment association becomes consistently large and positive.}
+\caption{Topic-cluster heterogeneity in the paper-level sentiment association. Topic controls are keyword-based clusters and should be interpreted as noisy topical proxies rather than official research areas. Most topic-specific estimates are imprecise, and none reveals an obvious subfield in which the conditional paper-level sentiment association becomes consistently large and positive.}
 \label{fig:app:topichetero}
 \end{figure}
 
@@ -155,7 +155,7 @@ The next set of appendix materials expands the observational story by showing ho
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Average marginal effects from the paper-level fixed-effects model. The outcome is final acceptance. Full models include the broader score, disagreement, confidence, review-structure, manuscript-side, year, and topic controls described in the main text; this table isolates the language dimensions because they are central to the paper's substantive argument.}
+\caption{Average marginal effects from the paper-level fixed-effects model. The outcome is final acceptance. Full models include the score, disagreement, confidence, review-structure, manuscript-side, year, and topic controls described in the main text; this table highlights the language dimensions because they are central to the paper's substantive argument.}
 \label{tab:app:paperame}
 \begin{tabular}{lrrr}
 \toprule
@@ -184,7 +184,7 @@ Number of keywords & 0.004 & 0.000 & 0.007 \\
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Average marginal effects from the review-level fixed-effects model. The outcome is a positive reviewer recommendation (rating or recommendation score $\ge 6$). As in the main text, the table highlights that review-level sentiment has a much larger association with recommendation than any other tone dimension, which is why the review-level model is treated as the clearest evidence that language tracks reviewer stance.}
+\caption{Average marginal effects from the review-level fixed-effects model. The outcome is a positive reviewer recommendation (rating or recommendation score $\ge 6$). As in the main text, the table shows that review-level sentiment has a much larger association with recommendation than any other tone dimension, which is why the review-level model is treated as the clearest evidence that language tracks reviewer stance.}
 \label{tab:app:reviewame}
 \begin{tabular}{lrrr}
 \toprule
@@ -240,7 +240,7 @@ Politeness gap & 2023 & 0.067 & 0.030 & 0.105 \\
 \scriptsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Within-score-bin bridge diagnostics. Bins are based on the within-year percentile of paper-level mean score. This table underlies the bridge figure and shows numerically that the accepted-minus-rejected sentiment gap is much smaller in the central score bins than in the extreme bins where acceptance is nearly certain or nearly impossible.}
+\caption{Within-score-bin bridge diagnostics. Bins are based on the within-year percentile of paper-level mean score. The table underlies the bridge figure and shows numerically that the accepted-minus-rejected sentiment gap is much smaller in the central score bins than in the extreme bins where acceptance is nearly certain or nearly impossible.}
 \label{tab:app:bridge}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrrr}
@@ -338,7 +338,7 @@ Topic cluster & Submissions & Average marginal effect & 95\% CI lower & 95\% CI 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_prediction_diagnostics.pdf}
-\caption{Appendix-only predictive diagnostics. \textbf{A}, held-out AUC for the baseline model and the model augmented with paper-level language features. \textbf{B}, incremental gains from adding language on held-out AUC and Brier score by year. Held-out discrimination is already high in the score-based baseline models, and the incremental changes from adding language are tiny in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
+\caption{Held-out predictive boundary checks. \textbf{A}, held-out AUC for the baseline model and the model augmented with paper-level language features. \textbf{B}, incremental gains from adding language on held-out AUC and Brier score by year. Discrimination is already high in the score-based baseline models, and the incremental changes from adding language are tiny in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
 \label{fig:app:prediction}
 \end{figure}
 
@@ -348,7 +348,7 @@ Topic cluster & Submissions & Average marginal effect & 95\% CI lower & 95\% CI 
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Appendix-only leave-one-year-out predictive diagnostics. The baseline uses score and manuscript controls; the extended model adds paper-level language features. Held-out AUC is already high in the baseline models, and the incremental changes from adding language are extremely small in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
+\caption{Leave-one-year-out predictive boundary checks. The baseline uses score and manuscript controls; the extended model adds paper-level language features. Held-out AUC is already high in the baseline models, and the incremental changes from adding language are extremely small in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
 \label{tab:app:prediction}
 \begin{tabular}{rrrrrr}
 \toprule
@@ -367,13 +367,13 @@ Held-out year & Baseline AUC & AUC with language & AUC change & Log-loss change 
 
 \FloatBarrier
 \vspace{0.6em}
-\section*{Appendix: Matched Observational Diagnostics}
-These appendix materials document overlap, balance, and sample composition for the matched borderline design and its sensitivities.
+\section*{Appendix: Matched Borderline Diagnostics}
+These appendix materials document common support, balance, matched-sample composition, and sensitivity checks for the borderline design. Their role is to show that the near-null matched estimates arise in a sample with improved comparability rather than from a visibly broken match.
 
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_psm_overlap.pdf}
-\caption{Propensity-score overlap for the primary borderline specification before and after matching. The matched sample retains substantial overlap while sharpening comparability between the higher-sentiment and lower-sentiment groups. This diagnostic matters because it shows that the near-zero matched estimate is not being produced by an obviously broken common-support region.}
+\caption{Propensity-score overlap for the primary borderline specification before and after matching. The matched sample retains substantial overlap while sharpening comparability between higher-sentiment and lower-sentiment papers. This diagnostic matters because it shows that the near-zero matched estimate is not being produced by an obviously broken common-support region.}
 \label{fig:app:overlap}
 \end{figure}
 
@@ -383,7 +383,7 @@ These appendix materials document overlap, balance, and sample composition for t
 \small
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Matched observational evidence from the borderline layer. The table reports the primary 35th-65th percentile window, two prespecified window sensitivities, and the top-versus-bottom sentiment-tercile sensitivity check. Across all four designs, estimated sentiment-linked differences in acceptance remain modest and their confidence intervals include differences close to zero, which is why the matched layer is interpreted as conservative validation rather than as the paper's strongest positive result.}
+\caption{Matched observational evidence from the borderline layer. The table reports the primary 35th-65th percentile window, two prespecified window sensitivities, and the top-versus-bottom sentiment-tercile sensitivity check. Across all four designs, estimated sentiment-linked differences in acceptance remain modest and their confidence intervals include values close to zero, which is why the matched layer is interpreted as conservative validation rather than as the paper's strongest positive result.}
 \label{tab:app:matchingeffects}
 \begin{tabular}{lrrrrr}
 \toprule
@@ -404,7 +404,7 @@ Top vs bottom terciles & -0.054 & -0.109 & 0.000 & 404 & Yes \\
 \normalsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Standardized mean differences before and after matching for the primary borderline matched sample. The core balance target is $|SMD| < 0.10$ after matching. The table shows that the largest pre-match imbalance is in mean review length and that this imbalance contracts sharply after matching along with the smaller imbalances in score, disagreement, confidence, and manuscript-side covariates.}
+\caption{Standardized mean differences before and after matching for the primary borderline sample. The core balance target is $|SMD| < 0.10$ after matching. The table shows that the largest pre-match imbalance is in mean review length and that this imbalance contracts sharply after matching, along with the smaller imbalances in score, disagreement, confidence, and manuscript-side covariates.}
 \label{tab:app:balance}
 \begin{tabular}{lrr}
 \toprule
@@ -429,7 +429,7 @@ Number of keywords & -0.003 & 0.011 \\
 \scriptsize
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Overlap summaries for the primary and sensitivity matched designs. The table reports the size of the analytic samples, the extent of common support, and the caliper used in each specification so that the reader can evaluate how much overlap is retained as the design window narrows or widens.}
+\caption{Overlap summaries for the primary and sensitivity matched designs. The table reports analytic-sample size, the extent of common support, and the caliper used in each specification so that the reader can evaluate how much overlap is retained as the design window narrows or widens.}
 \label{tab:app:overlap}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{lrrrrrrrl}
@@ -500,8 +500,8 @@ Topic cluster & Submissions & Representative keywords \\
 
 \FloatBarrier
 \vspace{0.6em}
-\section*{Appendix: Legacy Diagnostics from Earlier Derived Tables}
-The final appendix section preserves selected outputs from the earlier exploratory derived-table workflow. These materials remain useful as exploratory diagnostics and figure prototypes, but they are not the manuscript's primary evidentiary base.
+\section*{Appendix: Legacy Exploratory Materials}
+The final appendix section preserves selected outputs from the earlier derived-table workflow. These materials remain useful as exploratory benchmarks and historical prototypes, but they are not the manuscript's primary evidentiary base.
 
 \begin{figure}[!htbp]
 \centering
@@ -513,7 +513,7 @@ The final appendix section preserves selected outputs from the earlier explorato
 \begin{figure}[!htbp]
 \centering
 \includegraphics[width=0.98\linewidth]{appendix_figure_legacy_rq3.pdf}
-\caption{Legacy temporal and subgroup diagnostics from the earlier derived-table workflow, retained as appendix-only materials for comparison with the current archive-first analysis. Their role is archival rather than evidentiary: they show how the present manuscript reorganizes earlier stability patterns into a broader and more auditable design.}
+\caption{Legacy temporal and subgroup diagnostics from the earlier derived-table workflow, retained for comparison with the current archive-first analysis. Their role is archival rather than evidentiary: they show how the present manuscript reorganizes earlier stability patterns into a broader and more auditable design.}
 \label{fig:app:legacyrq3}
 \end{figure}
 
@@ -523,7 +523,7 @@ The final appendix section preserves selected outputs from the earlier explorato
 \small
 \renewcommand{\arraystretch}{1.20}
 \setlength{\tabcolsep}{6pt}
-\caption{Legacy multivariable logit benchmark from the earlier derived-table workflow. This table is retained only as a benchmark against the previous pipeline and should not be treated as the manuscript's primary source of inference.}
+\caption{Legacy multivariable logit benchmark from the earlier derived-table workflow. The table is retained only as a benchmark against the previous pipeline and should not be treated as the manuscript's primary source of inference.}
 \label{tab:app:legacymultivariable}
 \begin{tabular}{lrrrr}
 \toprule

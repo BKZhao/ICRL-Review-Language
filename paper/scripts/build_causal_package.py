@@ -2828,17 +2828,42 @@ def write_appendix_tables(
         "\\setcounter{table}{0}",
         "\\renewcommand{\\thefigure}{A\\arabic{figure}}",
         "\\setcounter{figure}{0}",
-        "\\section*{Appendix: Measurement and Data Validation}",
-        "This appendix extends the main text with report-style tables and diagnostic figures covering raw-archive parsing, measurement completeness, bridge analyses between descriptive and matched layers, and legacy diagnostics from the earlier derived-table workflow.",
+        "\\section*{Appendix: Archive Reconstruction and Measurement Checks}",
+        (
+            "This appendix documents the reconstruction of the raw ICLR archive and the "
+            "measurement checks that bound interpretation of the main-text results. It "
+            "reports archive coverage, parser completeness, field harmonization, and "
+            "measurement infrastructure before turning to observational, matched-sample, "
+            "and legacy supplementary materials."
+        ),
         "",
         latex_figure_from_file(
             "appendix_figure_measurement_summary.pdf",
-            "Measurement and archive-validation diagnostics. \\textbf{A}, yearly paper and review counts in the harmonized archive. \\textbf{B}, confidence parsing, keyword coverage, and positive-review prevalence by year; the clearest discontinuity is the loss of comparable confidence parsing in 2020. \\textbf{C}, the distribution of reviews per paper, showing that the archive is concentrated around three to four reviews per submission. \\textbf{D}, review-length distributions by final decision. Taken together, these panels document the scale of the archive and the practical boundaries of the measurement layer before any modeling begins.",
+            (
+                "Archive coverage and measurement checks for the reconstructed ICLR review "
+                "corpus. \\textbf{A}, yearly paper and review counts in the harmonized "
+                "archive. \\textbf{B}, confidence parsing, keyword coverage, and positive-"
+                "review prevalence by year; the most visible discontinuity is the loss of "
+                "a directly comparable confidence field in 2020. \\textbf{C}, the "
+                "distribution of reviews per paper, showing that most submissions receive "
+                "three to four reviews. \\textbf{D}, review-length distributions by final "
+                "decision. Together, the panels establish the scale of the archive and the "
+                "practical measurement boundaries within which the main-text models should "
+                "be interpreted."
+            ),
             "fig:app:measurement",
         ),
         latex_figure_from_file(
             "appendix_figure_feature_correlations.pdf",
-            "Paper-level correlation structure for language measures, score proxies, and review-structure covariates. The matrix shows that sentiment co-moves with reviewer score and, more modestly, with review length, whereas toxicity is only weakly related to most other observables. This matters for interpretation: the language measures do not float outside the rest of the evaluation record, but are embedded in the same broader profile that also contains scores, confidence, and review structure.",
+            (
+                "Paper-level correlation structure linking language measures to the broader "
+                "evaluation profile. The matrix shows that sentiment co-moves strongly with "
+                "reviewer score and more modestly with review length, whereas toxicity is "
+                "only weakly related to most other observables. The inferential point is "
+                "that review language does not float outside the rest of the archive: it is "
+                "embedded in the same profile that also contains scores, confidence, and "
+                "review structure."
+            ),
             "fig:app:correlations",
         ),
         latex_table_from_df(
@@ -2853,7 +2878,13 @@ def write_appendix_tables(
                 "Confidence parse rate",
                 "Decision parse rate",
             ],
-            "Raw-archive parsing diagnostics by year. The builder retains raw strings, parsed numeric fields, and parse-success flags for ratings, confidence, and final decisions. The table makes visible that parsing succeeds nearly completely for ratings and decisions across all years, while confidence is the one clear year-specific discontinuity because the 2020 raw export does not preserve a comparable confidence field.",
+            (
+                "Raw-archive parsing diagnostics by year. The builder retains raw strings, "
+                "parsed numeric fields, and parse-success flags for ratings, confidence, and "
+                "final decisions. Parsing succeeds nearly completely for scores and decisions "
+                "across all years, whereas confidence is the clearest year-specific break "
+                "because the 2020 export does not preserve a directly comparable field."
+            ),
             "tab:app:harmonization",
             align="rrrrrrrr",
             float_fmt={
@@ -2867,7 +2898,13 @@ def write_appendix_tables(
         latex_table_from_df(
             year_table_display,
             ["Year", "Score field", "Review-text field"],
-            "Year-specific score and review-text sources used in the harmonized raw-archive parser. The table documents the exact field substitutions needed to make the archive comparable across years, especially the shift from \\texttt{rating} to \\texttt{recommendation} and the richer multi-field review text available in 2022--2023.",
+            (
+                "Year-specific score and review-text sources used in the harmonized raw-"
+                "archive parser. The table records the field substitutions required to make "
+                "the archive comparable across years, especially the shift from "
+                "\\texttt{rating} to \\texttt{recommendation} and the richer multi-field "
+                "review text available in 2022--2023."
+            ),
             "tab:app:fieldmap",
             align="rll",
         ),
@@ -2883,7 +2920,14 @@ def write_appendix_tables(
                 "Keyword missingness",
                 "Mean review length (tokens)",
             ],
-            "Measurement summary by year. The table reports archive scale, positive recommendation prevalence, parser completeness, manuscript-metadata missingness, and average review length. It shows that the reconstructed archive is large and fairly balanced across years, while also making clear that 2022 uses shorter review-text fields on average and that keyword coverage is imperfect but broadly usable for topic-proxy construction.",
+            (
+                "Measurement summary by year. The table reports archive scale, positive "
+                "recommendation prevalence, parser completeness, manuscript-metadata "
+                "missingness, and average review length. It shows that the reconstructed "
+                "archive is large and broadly comparable across years, while also clarifying "
+                "that 2022 uses shorter review-text fields on average and that keyword "
+                "coverage, though imperfect, remains usable for topic-proxy construction."
+            ),
             "tab:app:measurementyear",
             align="rrrrrrrr",
             float_fmt={
@@ -2899,34 +2943,73 @@ def write_appendix_tables(
         latex_table_from_df(
             lexicon_display if not lexicon_display.empty else pd.DataFrame({"Lexicon": [], "Entries": []}),
             ["Lexicon", "Entries"],
-            "Legacy lexicon inventory from the earlier exploratory workflow. These resources are preserved as measurement diagnostics rather than as the manuscript's source of truth. Including them here clarifies what the current rebuild inherited, checked, and simplified when moving from the older exploratory pipeline to the present raw-archive package.",
+            (
+                "Legacy lexicon inventory carried forward from the earlier exploratory "
+                "workflow. These resources are retained as measurement background rather "
+                "than as the manuscript's source of truth. Including them here clarifies "
+                "what the archive-first rebuild inherited, audited, and simplified."
+            ),
             "tab:app:lexicon",
             align="lr",
         ),
         "\\FloatBarrier",
         "\\vspace{0.6em}",
-        "\\section*{Appendix: Bridge and Observational Diagnostics}",
-        "The next set of appendix materials expands the observational story by showing how descriptive language gaps behave inside score bins and how the paper-level sentiment association varies across topic-cluster proxies.",
+        "\\section*{Appendix: Descriptive Stability and Conditional Diagnostics}",
+        (
+            "The next set of appendix materials expands the main observational story. It "
+            "shows how accepted-minus-rejected language gaps behave across years and score "
+            "regions, and how the conditional paper-level sentiment association varies "
+            "across disagreement groups and topic-cluster proxies."
+        ),
         "",
         latex_figure_from_file(
             "figure3_temporal_stability.pdf",
-            "Temporal stability of the descriptive language gap. Accepted-minus-rejected differences are shown separately for sentiment and politeness in each conference year, with pooled summaries shown below the year-specific estimates. The direction of the gap does not reverse in any year for either measure, which is why the main text describes this descriptive pattern as the most stable regularity in the paper.",
+            (
+                "Temporal stability of the descriptive language gap. Accepted-minus-rejected "
+                "differences are shown separately for sentiment and politeness in each "
+                "conference year, with pooled summaries below the year-specific estimates. "
+                "The sign of the gap does not reverse in any year for either measure, which "
+                "is why the main text treats descriptive sentiment and politeness alignment "
+                "with acceptance as the most stable empirical regularity in the study."
+            ),
             "fig:app:temporal",
         ),
         latex_figure_from_file(
             "appendix_figure_score_bridge.pdf",
-            "Bridge analysis linking the full-sample descriptive layer to the matched borderline layer. \\textbf{A}, acceptance rates across within-year mean-score deciles, with bar color tracking the decision mix of each bin. \\textbf{B}, accepted-minus-rejected sentiment gaps within the same score bins. The key pattern is attenuation in the middle of the score distribution, where accepted and rejected papers overlap most plausibly; by contrast, the largest raw differences occur in regions where decisions are already nearly deterministic.",
+            (
+                "Bridge analysis linking the full-sample descriptive layer to the matched "
+                "borderline layer. \\textbf{A}, acceptance rates across within-year "
+                "mean-score deciles, with bar color tracking the decision mix of each bin. "
+                "\\textbf{B}, accepted-minus-rejected sentiment gaps within the same score "
+                "bins. The central pattern is attenuation in the middle of the score "
+                "distribution, where accepted and rejected papers overlap most plausibly; "
+                "the largest raw differences occur instead in regions where decisions are "
+                "already close to deterministic."
+            ),
             "fig:app:bridge",
         ),
         latex_figure_from_file(
             "appendix_figure_topic_heterogeneity.pdf",
-            "Topic-cluster heterogeneity in the paper-level sentiment association. Topic controls are keyword-based clusters and should be interpreted as noisy topical proxies rather than official research areas. Most topic-specific estimates are imprecise and none reveals an obvious subfield in which the conditional paper-level sentiment association becomes consistently large and positive.",
+            (
+                "Topic-cluster heterogeneity in the paper-level sentiment association. Topic "
+                "controls are keyword-based clusters and should be interpreted as noisy "
+                "topical proxies rather than official research areas. Most topic-specific "
+                "estimates are imprecise, and none reveals an obvious subfield in which the "
+                "conditional paper-level sentiment association becomes consistently large "
+                "and positive."
+            ),
             "fig:app:topichetero",
         ),
         latex_table_from_df(
             paper_ame_display,
             ["Predictor", "Average marginal effect", "95% CI lower", "95% CI upper"],
-            "Average marginal effects from the paper-level fixed-effects model. The outcome is final acceptance. Full models include the broader score, disagreement, confidence, review-structure, manuscript-side, year, and topic controls described in the main text; this table isolates the language dimensions because they are central to the paper's substantive argument.",
+            (
+                "Average marginal effects from the paper-level fixed-effects model. The "
+                "outcome is final acceptance. Full models include the score, disagreement, "
+                "confidence, review-structure, manuscript-side, year, and topic controls "
+                "described in the main text; this table highlights the language dimensions "
+                "because they are central to the paper's substantive argument."
+            ),
             "tab:app:paperame",
             align="lrrr",
             float_fmt={"Average marginal effect": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -2934,7 +3017,14 @@ def write_appendix_tables(
         latex_table_from_df(
             review_ame_display,
             ["Predictor", "Average marginal effect", "95% CI lower", "95% CI upper"],
-            "Average marginal effects from the review-level fixed-effects model. The outcome is a positive reviewer recommendation (rating or recommendation score $\\ge 6$). As in the main text, the table highlights that review-level sentiment has a much larger association with recommendation than any other tone dimension, which is why the review-level model is treated as the clearest evidence that language tracks reviewer stance.",
+            (
+                "Average marginal effects from the review-level fixed-effects model. The "
+                "outcome is a positive reviewer recommendation (rating or recommendation "
+                "score $\\ge 6$). As in the main text, the table shows that review-level "
+                "sentiment has a much larger association with recommendation than any other "
+                "tone dimension, which is why the review-level model is treated as the "
+                "clearest evidence that language tracks reviewer stance."
+            ),
             "tab:app:reviewame",
             "lrrr",
             float_fmt={"Average marginal effect": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -2942,7 +3032,13 @@ def write_appendix_tables(
         latex_table_from_df(
             yearly_gaps_display,
             ["Language dimension", "Year", "Mean difference", "95% CI lower", "95% CI upper"],
-            "Accepted-minus-rejected yearly descriptive gaps for the two main language dimensions discussed in the paper. Sentiment differences are positive in every year and larger than politeness differences throughout, reinforcing the interpretation that evaluative valence rather than generic civility is doing most of the descriptive work.",
+            (
+                "Accepted-minus-rejected yearly descriptive gaps for the two main language "
+                "dimensions discussed in the paper. Sentiment differences are positive in "
+                "every year and larger than politeness differences throughout, reinforcing "
+                "the interpretation that evaluative valence rather than generic civility is "
+                "doing most of the descriptive work."
+            ),
             "tab:app:yearlygaps",
             "lrrrr",
             float_fmt={"Mean difference": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -2959,7 +3055,13 @@ def write_appendix_tables(
                 "95% CI lower",
                 "95% CI upper",
             ],
-            "Within-score-bin bridge diagnostics. Bins are based on the within-year percentile of paper-level mean score. This table underlies the bridge figure and shows numerically that the accepted-minus-rejected sentiment gap is much smaller in the central score bins than in the extreme bins where acceptance is nearly certain or nearly impossible.",
+            (
+                "Within-score-bin bridge diagnostics. Bins are based on the within-year "
+                "percentile of paper-level mean score. The table underlies the bridge "
+                "figure and shows numerically that the accepted-minus-rejected sentiment "
+                "gap is much smaller in the central score bins than in the extreme bins "
+                "where acceptance is nearly certain or nearly impossible."
+            ),
             "tab:app:bridge",
             "lrrrrrrr",
             float_fmt={
@@ -2974,7 +3076,12 @@ def write_appendix_tables(
         latex_table_from_df(
             heterogeneity_year_display,
             ["Year", "Average marginal effect", "95% CI lower", "95% CI upper", "Specification note"],
-            "Year-specific average marginal effects of paper-level sentiment in the paper-level model. The estimates move around zero but do not reveal a year in which the conditional paper-level sentiment association becomes both large and precisely positive.",
+            (
+                "Year-specific average marginal effects of paper-level sentiment in the "
+                "paper-level model. The estimates move around zero but do not reveal a year "
+                "in which the conditional paper-level sentiment association becomes both "
+                "large and precisely positive."
+            ),
             "tab:app:heteroyear",
             "rrrrl",
             float_fmt={"Average marginal effect": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -2983,7 +3090,12 @@ def write_appendix_tables(
         latex_table_from_df(
             heterogeneity_disagreement_display,
             ["Reviewer disagreement tier", "Average marginal effect", "95% CI lower", "95% CI upper", "Specification note"],
-            "Average marginal effects of paper-level sentiment by disagreement tercile. This table complements the main heterogeneity figure by showing numerically that high reviewer disagreement does not produce a markedly larger positive paper-level sentiment effect.",
+            (
+                "Average marginal effects of paper-level sentiment by disagreement tercile. "
+                "This table complements the main heterogeneity figure by showing "
+                "numerically that high reviewer disagreement does not produce a markedly "
+                "larger positive paper-level sentiment effect."
+            ),
             "tab:app:heterodisagreement",
             "lrrrl",
             float_fmt={"Average marginal effect": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -2991,14 +3103,28 @@ def write_appendix_tables(
         latex_table_from_df(
             heterogeneity_topic_display,
             ["Topic cluster", "Submissions", "Average marginal effect", "95% CI lower", "95% CI upper", "Representative keywords"],
-            "Average marginal effects of paper-level sentiment by keyword-based topic cluster. Because the topic clusters are deterministic keyword proxies rather than official tracks, the table is best read as a boundary check: it helps rule out the concern that the pooled near-null paper-level estimate is hiding one dominant topic-specific positive effect.",
+            (
+                "Average marginal effects of paper-level sentiment by keyword-based topic "
+                "cluster. Because the topic clusters are deterministic keyword proxies "
+                "rather than official tracks, the table is best read as a boundary check: "
+                "it helps rule out the concern that the pooled near-null paper-level "
+                "estimate is hiding one dominant topic-specific positive effect."
+            ),
             "tab:app:heterotopic",
             "rrr rrl".replace(" ", ""),
             float_fmt={"Average marginal effect": 3, "95% CI lower": 3, "95% CI upper": 3},
         ),
         latex_figure_from_file(
             "appendix_figure_prediction_diagnostics.pdf",
-            "Appendix-only predictive diagnostics. \\textbf{A}, held-out AUC for the baseline model and the model augmented with paper-level language features. \\textbf{B}, incremental gains from adding language on held-out AUC and Brier score by year. Held-out discrimination is already high in the score-based baseline models, and the incremental changes from adding language are tiny in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.",
+            (
+                "Held-out predictive boundary checks. \\textbf{A}, held-out AUC for the "
+                "baseline model and the model augmented with paper-level language "
+                "features. \\textbf{B}, incremental gains from adding language on held-out "
+                "AUC and Brier score by year. Discrimination is already high in the "
+                "score-based baseline models, and the incremental changes from adding "
+                "language are tiny in absolute magnitude, which is why prediction is "
+                "treated as a boundary condition rather than as a headline contribution."
+            ),
             "fig:app:prediction",
         ),
         latex_table_from_df(
@@ -3011,7 +3137,14 @@ def write_appendix_tables(
                 "Log-loss change",
                 "Brier-score change",
             ],
-            "Appendix-only leave-one-year-out predictive diagnostics. The baseline uses score and manuscript controls; the extended model adds paper-level language features. Held-out AUC is already high in the baseline models, and the incremental changes from adding language are extremely small in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.",
+            (
+                "Leave-one-year-out predictive boundary checks. The baseline uses score and "
+                "manuscript controls; the extended model adds paper-level language "
+                "features. Held-out AUC is already high in the baseline models, and the "
+                "incremental changes from adding language are extremely small in absolute "
+                "magnitude, which is why prediction is treated as a boundary condition "
+                "rather than as a headline contribution."
+            ),
             "tab:app:prediction",
             "rrrrrr",
             float_fmt={
@@ -3024,12 +3157,24 @@ def write_appendix_tables(
         ),
         "\\FloatBarrier",
         "\\vspace{0.6em}",
-        "\\section*{Appendix: Matched Observational Diagnostics}",
-        "These appendix materials document overlap, balance, and sample composition for the matched borderline design and its sensitivities.",
+        "\\section*{Appendix: Matched Borderline Diagnostics}",
+        (
+            "These appendix materials document common support, balance, matched-sample "
+            "composition, and sensitivity checks for the borderline design. Their role is "
+            "to show that the near-null matched estimates arise in a sample with improved "
+            "comparability rather than from a visibly broken match."
+        ),
         "",
         latex_figure_from_file(
             "appendix_figure_psm_overlap.pdf",
-            "Propensity-score overlap for the primary borderline specification before and after matching. The matched sample retains substantial overlap while sharpening comparability between the higher-sentiment and lower-sentiment groups. This diagnostic matters because it shows that the near-zero matched estimate is not being produced by an obviously broken common-support region.",
+            (
+                "Propensity-score overlap for the primary borderline specification before "
+                "and after matching. The matched sample retains substantial overlap while "
+                "sharpening comparability between higher-sentiment and lower-sentiment "
+                "papers. This diagnostic matters because it shows that the near-zero "
+                "matched estimate is not being produced by an obviously broken common-"
+                "support region."
+            ),
             "fig:app:overlap",
         ),
         latex_table_from_df(
@@ -3042,7 +3187,16 @@ def write_appendix_tables(
                 "Matched pairs",
                 "Balance target met",
             ],
-            "Matched observational evidence from the borderline layer. The table reports the primary 35th-65th percentile window, two prespecified window sensitivities, and the top-versus-bottom sentiment-tercile sensitivity check. Across all four designs, estimated sentiment-linked differences in acceptance remain modest and their confidence intervals include differences close to zero, which is why the matched layer is interpreted as conservative validation rather than as the paper's strongest positive result.",
+            (
+                "Matched observational evidence from the borderline layer. The table "
+                "reports the primary 35th-65th percentile window, two prespecified window "
+                "sensitivities, and the top-versus-bottom sentiment-tercile sensitivity "
+                "check. Across all four designs, estimated sentiment-linked differences in "
+                "acceptance remain modest and their confidence intervals include values "
+                "close to zero, which is why the matched layer is interpreted as "
+                "conservative validation rather than as the paper's strongest positive "
+                "result."
+            ),
             "tab:app:matchingeffects",
             "lrrrrr",
             float_fmt={"Matched contrast (ATT)": 3, "95% CI lower": 3, "95% CI upper": 3},
@@ -3051,7 +3205,14 @@ def write_appendix_tables(
         latex_table_from_df(
             primary_balance_display,
             ["Covariate", "Absolute SMD before matching", "Absolute SMD after matching"],
-            "Standardized mean differences before and after matching for the primary borderline matched sample. The core balance target is $|SMD| < 0.10$ after matching. The table shows that the largest pre-match imbalance is in mean review length and that this imbalance contracts sharply after matching along with the smaller imbalances in score, disagreement, confidence, and manuscript-side covariates.",
+            (
+                "Standardized mean differences before and after matching for the primary "
+                "borderline sample. The core balance target is $|SMD| < 0.10$ after "
+                "matching. The table shows that the largest pre-match imbalance is in mean "
+                "review length and that this imbalance contracts sharply after matching, "
+                "along with the smaller imbalances in score, disagreement, confidence, and "
+                "manuscript-side covariates."
+            ),
             "tab:app:balance",
             "lrr",
             float_fmt={"Absolute SMD before matching": 3, "Absolute SMD after matching": 3},
@@ -3069,7 +3230,12 @@ def write_appendix_tables(
                 "Caliper",
                 "Balance target met",
             ],
-            "Overlap summaries for the primary and sensitivity matched designs. The table reports the size of the analytic samples, the extent of common support, and the caliper used in each specification so that the reader can evaluate how much overlap is retained as the design window narrows or widens.",
+            (
+                "Overlap summaries for the primary and sensitivity matched designs. The "
+                "table reports analytic-sample size, the extent of common support, and the "
+                "caliper used in each specification so that the reader can evaluate how "
+                "much overlap is retained as the design window narrows or widens."
+            ),
             "tab:app:overlap",
             "lrrrrrrrl",
             float_fmt={
@@ -3085,30 +3251,58 @@ def write_appendix_tables(
             if not primary_counts_display.empty
             else pd.DataFrame({"Year": YEARS, "Matched pairs": [0] * len(YEARS)}),
             ["Year", "Matched pairs"],
-            "Matched-pair counts by year for the primary borderline specification. The matched sample is distributed across all six conference years, indicating that the primary matched design is not driven by one unusually well-behaved cohort.",
+            (
+                "Matched-pair counts by year for the primary borderline specification. The "
+                "matched sample is distributed across all six conference years, indicating "
+                "that the primary matched design is not driven by one unusually well-"
+                "behaved cohort."
+            ),
             "tab:app:matchedcounts",
             "rr",
         ),
         latex_table_from_df(
             topic_short_display,
             ["Topic cluster", "Submissions", "Representative keywords"],
-            "Deterministic keyword-based topic clusters used as topic fixed effects in the main models. The table is included for transparency because the paper does not claim official area-level stability; instead, these clusters serve as reproducible but noisy controls for topical composition.",
+            (
+                "Deterministic keyword-based topic clusters used as topic fixed effects in "
+                "the main models. The table is included for transparency because the paper "
+                "does not claim official area-level stability; instead, these clusters "
+                "serve as reproducible but noisy controls for topical composition."
+            ),
             "tab:app:topics",
             "rrl",
         ),
         "\\FloatBarrier",
         "\\vspace{0.6em}",
-        "\\section*{Appendix: Legacy Diagnostics from Earlier Derived Tables}",
-        "The final appendix section preserves selected outputs from the earlier exploratory derived-table workflow. These materials remain useful as exploratory diagnostics and figure prototypes, but they are not the manuscript's primary evidentiary base.",
+        "\\section*{Appendix: Legacy Exploratory Materials}",
+        (
+            "The final appendix section preserves selected outputs from the earlier derived-"
+            "table workflow. These materials remain useful as exploratory benchmarks and "
+            "historical prototypes, but they are not the manuscript's primary evidentiary "
+            "base."
+        ),
         "",
         latex_figure_from_file(
             "appendix_figure_legacy_rq1.pdf",
-            "Legacy descriptive diagnostics from the earlier derived-table workflow, redrawn here in a cleaner format and retained as exploratory benchmarks for the expanded raw-archive rebuild. Their role is historical rather than inferential: they show that the archive-first package preserves the broad descriptive story while improving traceability and measurement transparency.",
+            (
+                "Legacy descriptive diagnostics from the earlier derived-table workflow, "
+                "redrawn here in a cleaner format and retained as exploratory benchmarks "
+                "for the expanded raw-archive rebuild. Their role is historical rather than "
+                "inferential: they show that the archive-first package preserves the broad "
+                "descriptive story while improving traceability and measurement "
+                "transparency."
+            ),
             "fig:app:legacyrq1",
         ),
         latex_figure_from_file(
             "appendix_figure_legacy_rq3.pdf",
-            "Legacy temporal and subgroup diagnostics from the earlier derived-table workflow, retained as appendix-only materials for comparison with the current archive-first analysis. Their role is archival rather than evidentiary: they show how the present manuscript reorganizes earlier stability patterns into a broader and more auditable design.",
+            (
+                "Legacy temporal and subgroup diagnostics from the earlier derived-table "
+                "workflow, retained for comparison with the current archive-first "
+                "analysis. Their role is archival rather than evidentiary: they show how "
+                "the present manuscript reorganizes earlier stability patterns into a "
+                "broader and more auditable design."
+            ),
             "fig:app:legacyrq3",
         ),
         latex_table_from_df(
@@ -3118,7 +3312,12 @@ def write_appendix_tables(
                 {"Predictor": [], "Odds ratio": [], "95% CI lower": [], "95% CI upper": [], "P-value": []}
             ),
             ["Predictor", "Odds ratio", "95% CI lower", "95% CI upper", "P-value"],
-            "Legacy multivariable logit benchmark from the earlier derived-table workflow. This table is retained only as a benchmark against the previous pipeline and should not be treated as the manuscript's primary source of inference.",
+            (
+                "Legacy multivariable logit benchmark from the earlier derived-table "
+                "workflow. The table is retained only as a benchmark against the previous "
+                "pipeline and should not be treated as the manuscript's primary source of "
+                "inference."
+            ),
             "tab:app:legacymultivariable",
             "lrrrr",
             float_fmt={"Odds ratio": 3, "95% CI lower": 3, "95% CI upper": 3, "P-value": 3},
@@ -3129,7 +3328,13 @@ def write_appendix_tables(
             if not legacy_meta_display.empty
             else pd.DataFrame({"Measure": [], "Pooled effect": [], "I-squared (%)": [], "Stability pattern": []}),
             ["Measure", "Pooled effect", "I-squared (%)", "Stability pattern"],
-            "Legacy stability summary from the earlier exploratory workflow. As with the previous legacy table, this summary is included to document continuity with the exploratory stage of the project rather than to substitute for the raw-archive analyses reported in the main text and earlier appendix sections.",
+            (
+                "Legacy stability summary from the earlier exploratory workflow. As with "
+                "the previous legacy table, this summary is included to document "
+                "continuity with the exploratory stage of the project rather than to "
+                "substitute for the raw-archive analyses reported in the main text and "
+                "earlier appendix sections."
+            ),
             "tab:app:legacymeta",
             "lrrl",
             float_fmt={"Pooled effect": 3, "I-squared (%)": 3},

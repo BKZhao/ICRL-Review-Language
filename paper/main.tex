@@ -11,7 +11,7 @@
 \graphicspath{{figures/}}
 \input{data/derived/numbers.tex}
 
-\title{Review language tracks acceptance but adds little predictive value in AI peer review}
+\title{Do Review Comments Matter? Review Language and Acceptance at ICLR}
 
 \author[a,1]{Author Placeholder1}
 \author[b,2]{Author Placeholder2}
@@ -62,7 +62,7 @@ These design choices are motivated by the archive itself. Appendix Figure~\ref{f
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figure1_overview.pdf}
-\caption{\textbf{Archive overview and first-pass language differences in ICLR peer review.} \textbf{A}, Yearly paper counts and acceptance rates in the rebuilt ICLR 2018--2023 archive. The panel situates the analysis in the institutional scale of the conference: after the smaller 2018 cohort, submission volume is broadly high and acceptance rates move within a relatively narrow band, indicating that the main descriptive patterns are not driven by a single unusual year. \textbf{B}, Accepted-minus-rejected mean differences in the four paper-level language measures, with 95\% confidence intervals. The descriptive separation is concentrated in sentiment and, more modestly, politeness, whereas constructiveness differs only slightly and toxicity is substantively near zero. Taken together, the two panels establish the paper's first empirical claim: accepted papers are discussed more positively, but not simply in a uniformly friendlier way on every language dimension.}
+\caption{\textbf{Archive overview and first-pass language differences in ICLR peer review.} \textbf{A}, Yearly paper counts and acceptance rates in the rebuilt ICLR 2018--2023 archive. The panel places the analysis in the institutional scale of the conference: after the smaller 2018 cohort, submission volume remains high and acceptance rates move within a comparatively narrow range, indicating that the main descriptive patterns are not driven by a single anomalous year. \textbf{B}, Accepted-minus-rejected mean differences in the four paper-level language measures, with 95\% confidence intervals. Descriptive separation is concentrated in sentiment and, more modestly, politeness, whereas constructiveness differs only slightly and toxicity is substantively near zero. Taken together, the panels establish the paper's first empirical result: accepted papers are discussed more positively, but not simply in a uniformly friendlier or less critical way on every language dimension.}
 \label{fig:overview}
 \end{figure*}
 
@@ -79,7 +79,7 @@ The descriptive and review-level findings therefore establish the paper's first 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figure1_design_motivation.pdf}
-\caption{\textbf{Score overlap motivates the narrower matched layer.} \textbf{A}, Distributions of within-year mean-score percentiles for accepted and rejected papers. Overlap between the two outcome groups is concentrated in the middle of the score distribution rather than at the extremes, where decisions are already close to deterministic. \textbf{B}, Paper counts and acceptance rates by within-year mean-score decile. The shaded middle band marks the 35th--65th percentile window used for the primary borderline design, yielding \BorderlinePapers{} papers. The figure provides the design logic for the matched analysis: if any sentiment-linked acceptance contrast is going to survive after stronger alignment on observed evaluation profiles, it should be sought in the central score region rather than among papers whose outcomes were already nearly fixed by score.}
+\caption{\textbf{Score overlap motivates the narrower matched layer.} \textbf{A}, Distributions of within-year mean-score percentiles for accepted and rejected papers. Overlap between the two outcome groups is concentrated in the middle of the score distribution rather than at the extremes, where decisions are already close to deterministic. \textbf{B}, Paper counts and acceptance rates by within-year mean-score decile. The shaded middle band marks the 35th--65th percentile window used for the primary borderline design, yielding \BorderlinePapers{} papers. The figure provides the design logic for the matched analysis: if any sentiment-linked acceptance contrast survives after stronger alignment on observed evaluation profiles, it should be visible in this central score region rather than among papers whose outcomes were already largely fixed by score.}
 \label{fig:design}
 \end{figure*}
 
@@ -100,7 +100,7 @@ A coarse bridge analysis helps connect the descriptive and matched layers. Appen
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figure2_paper_fe_margins.pdf}
-\caption{\textbf{Raw separation remains visible, but conditional paper-level margins are nearly flat.} \textbf{A}, Model-implied probability of acceptance across the observed paper-level sentiment range after conditioning on mean score, score disagreement, confidence, review volume, review length, manuscript-side controls, year fixed effects, and keyword-based topic-cluster fixed effects. Rug marks show empirical support across the sentiment distribution, and the fitted line moves only from \PredProbLowSent{} at the low end to \PredProbHighSent{} at the high end. \textbf{B}, Raw paper-level sentiment distributions by final decision. The figure is constructed to display the paper's core contrast in a single visual frame: accepted papers are indeed described more positively in the raw data, but once stronger evaluation proxies are included, the remaining paper-level sentiment gradient becomes minimal.}
+\caption{\textbf{Raw separation remains visible, but conditional paper-level margins are nearly flat.} \textbf{A}, Model-implied probability of acceptance across the observed paper-level sentiment range after conditioning on mean score, score disagreement, confidence, review volume, review length, manuscript-side controls, year fixed effects, and keyword-based topic-cluster fixed effects. Rug marks show empirical support across the sentiment distribution, and the fitted line moves only from \PredProbLowSent{} at the low end to \PredProbHighSent{} at the high end. \textbf{B}, Raw paper-level sentiment distributions by final decision. The figure is designed to place the paper's main contrast in a single frame: accepted papers are described more positively in the raw archive, but once stronger evaluation proxies are included, the remaining paper-level sentiment slope is substantively minimal.}
 \label{fig:papermargins}
 \end{figure*}
 
@@ -119,7 +119,7 @@ Appendix Figure~\ref{fig:app:overlap} provides the complementary overlap view by
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figure3_matched_effect_balance.pdf}
-\caption{\textbf{Matched observational evidence from the borderline layer.} \textbf{A}, Estimated matched acceptance contrast (ATT estimand) for the primary borderline specification and prespecified sensitivity checks. None of the matched specifications yields a clearly positive and practically large sentiment-linked acceptance difference; the primary estimate is \PSMATT{} with a 95\% confidence interval of \PSMATTCI{}. \textbf{B}, Covariate balance diagnostics for the primary matched sample. Absolute standardized mean differences shrink sharply after matching and all core covariates fall below the conventional $|SMD| = 0.10$ benchmark. The figure links design quality to substantive interpretation: the near-zero matched estimates arise in a sample with visibly improved balance, not from a visibly failed match or a trivially nonoverlapping treatment comparison.}
+\caption{\textbf{Matched observational evidence from the borderline layer.} \textbf{A}, Estimated matched acceptance contrast (ATT estimand) for the primary borderline specification and prespecified sensitivity checks. None of the matched specifications yields a clearly positive and practically large sentiment-linked acceptance difference; the primary estimate is \PSMATT{} with a 95\% confidence interval of \PSMATTCI{}. \textbf{B}, Covariate balance diagnostics for the primary matched sample. Absolute standardized mean differences shrink sharply after matching and all core covariates fall below the conventional $|SMD| = 0.10$ benchmark. The figure links design quality to substantive interpretation: the near-zero matched estimates arise in a sample with visibly improved balance and retained overlap, not from a failed match or a trivially noncomparable contrast.}
 \label{fig:matched}
 \end{figure*}
 
@@ -138,7 +138,7 @@ The temporal and heterogeneity analyses therefore point in different but compati
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{figure4_heterogeneity_ame.pdf}
-\caption{\textbf{Conditional heterogeneity in the paper-level sentiment association.} \textbf{A}, Year-specific average marginal effects of paper-level sentiment from the paper-level model. \textbf{B}, Average marginal effects by disagreement tercile. Across both panels, point estimates remain close to zero relative to the scale of the raw descriptive gaps, and confidence intervals generally straddle small effects. The figure complements the appendix's stable year-by-year descriptive patterns by showing that the conditional paper-level sentiment association does not become large in any obvious conference year or reviewer-disagreement environment.}
+\caption{\textbf{Conditional heterogeneity in the paper-level sentiment association.} \textbf{A}, Year-specific average marginal effects of paper-level sentiment from the paper-level model. \textbf{B}, Average marginal effects by disagreement tercile. Across both panels, point estimates remain close to zero relative to the scale of the raw descriptive gaps, and confidence intervals generally straddle small effects. The figure complements the appendix's stable year-by-year descriptive patterns by showing that the conditional paper-level sentiment association does not expand into a large effect in any obvious conference year or reviewer-disagreement environment.}
 \label{fig:heterogeneity}
 \end{figure*}
 
@@ -172,7 +172,7 @@ Within those bounds, the main conclusion is straightforward. Review comments mat
 
 \section*{Data Availability}
 
-The data, code, figures, and derived outputs for this study will be made available through the project GitHub repository. The underlying review records come from OpenReview, using the ICLR group page and the OpenReview API.
+The data, code, figures, and derived outputs for this study are available at \texttt{https://github.com/BKZhao/ICRL-Review-Language}. The underlying review records come from OpenReview, using the ICLR group page and the OpenReview API.
 
 \bibliography{references}
 

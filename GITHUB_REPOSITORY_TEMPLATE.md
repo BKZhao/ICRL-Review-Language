@@ -1,14 +1,14 @@
 # GitHub Repository Address Template
 
-Use the following repository URL after creating the GitHub repository:
+Repository URL:
 
-`https://github.com/BKZhao/iclr-review-language-study`
+`https://github.com/BKZhao/ICRL-Review-Language`
 
 ## Suggested manuscript sentence
 
 Data, code, figures, and derived outputs for this study are available at:
 
-`https://github.com/BKZhao/iclr-review-language-study`
+`https://github.com/BKZhao/ICRL-Review-Language`
 
 ## Suggested short repository description
 
