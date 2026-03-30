@@ -1,0 +1,19 @@
+# Python environments
+paper/.venv/
+**/__pycache__/
+*.pyc
+
+# LaTeX build artifacts
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.toc
+paper/*.lof
+paper/*.lot
+paper/*.xdv
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

@@ -1,0 +1,13 @@
+term,label,ame,ci_low,ci_high,model,n,ame_scale,ame_method,topic_cluster,n_papers,fit_note
+mean_sentiment,Paper-level mean review sentiment,-0.02123835647890292,-0.10591996328128722,0.06316059548544449,topic_cluster:1,641,0.07695740472308896,draws_scaled,1,641,fallback_hc1_cov
+mean_sentiment,Paper-level mean review sentiment,0.06873439636288509,-0.013672676501029822,0.14565531918122904,topic_cluster:2,224,0.06926482657077773,draws_scaled,2,224,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.005192937785168883,-0.07677654135603461,0.052309089144778415,topic_cluster:3,668,0.06545111820889375,draws_scaled,3,668,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.011157017042203876,-0.021364151204691827,0.045403655555555034,topic_cluster:4,2275,0.0724914160583173,draws_scaled,4,2275,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.10038714090921946,-0.22592922412150127,0.016704315745007445,topic_cluster:5,289,0.053859312796573,draws_scaled,5,289,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.016347013562095888,-0.3957427367571061,0.3960981611556503,topic_cluster:6,120,0.04876683349663309,draws_scaled,6,120,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.058768359457829884,-0.14184654909269795,0.01370114104633166,topic_cluster:7,476,0.06741564525163433,draws_scaled,7,476,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.05042648877877547,-0.17474473969930612,0.2817709402084958,topic_cluster:8,78,0.07016497988181031,draws_scaled,8,78,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.08331604448614535,0.0022817225578309116,0.16615345870594284,topic_cluster:9,263,0.05262180719486207,draws_scaled,9,263,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.15278711070385492,-0.2634323366709595,-0.02005789509834332,topic_cluster:10,155,0.04910307892874489,draws_scaled,10,155,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.060018979459430306,-0.15487376798263874,0.032311207550374074,topic_cluster:11,274,0.07058894909488493,draws_scaled,11,274,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.029681970388625557,-0.05332311413737324,0.1166174720149351,topic_cluster:12,459,0.07372274220796943,draws_scaled,12,459,requested_spec

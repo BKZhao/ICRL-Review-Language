@@ -1,0 +1,5 @@
+specification,att,ci_low,ci_high,matched_pairs,balance_pass
+Primary window 35th-65th percentile,0.004316546762589928,-0.037446043165467624,0.04320143884892067,695,True
+Window sensitivity 40th-60th percentile,0.009324009324009324,-0.039627039627039624,0.05367132867132836,429,True
+Window sensitivity 30th-70th percentile,0.010588235294117647,-0.027088235294117646,0.05176470588235294,850,True
+Treatment sensitivity: top vs bottom sentiment tercile,-0.054455445544554455,-0.10891089108910891,0.0,404,True

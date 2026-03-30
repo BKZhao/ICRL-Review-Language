@@ -1,0 +1,563 @@
+\FloatBarrier
+\onecolumn
+\appendix
+\renewcommand{\thetable}{A\arabic{table}}
+\setcounter{table}{0}
+\renewcommand{\thefigure}{A\arabic{figure}}
+\setcounter{figure}{0}
+\section*{Appendix: Measurement and Data Validation}
+This appendix extends the main text with report-style tables and diagnostic figures covering raw-archive parsing, measurement completeness, bridge analyses between descriptive and matched layers, and legacy diagnostics from the earlier derived-table workflow.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_measurement_summary.pdf}
+\caption{Measurement and archive-validation diagnostics. \textbf{A}, yearly paper and review counts in the harmonized archive. \textbf{B}, confidence parsing, keyword coverage, and positive-review prevalence by year; the clearest discontinuity is the loss of comparable confidence parsing in 2020. \textbf{C}, the distribution of reviews per paper, showing that the archive is concentrated around three to four reviews per submission. \textbf{D}, review-length distributions by final decision. Taken together, these panels document the scale of the archive and the practical boundaries of the measurement layer before any modeling begins.}
+\label{fig:app:measurement}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_feature_correlations.pdf}
+\caption{Paper-level correlation structure for language measures, score proxies, and review-structure covariates. The matrix shows that sentiment co-moves with reviewer score and, more modestly, with review length, whereas toxicity is only weakly related to most other observables. This matters for interpretation: the language measures do not float outside the rest of the evaluation record, but are embedded in the same broader profile that also contains scores, confidence, and review structure.}
+\label{fig:app:correlations}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\scriptsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Raw-archive parsing diagnostics by year. The builder retains raw strings, parsed numeric fields, and parse-success flags for ratings, confidence, and final decisions. The table makes visible that parsing succeeds nearly completely for ratings and decisions across all years, while confidence is the one clear year-specific discontinuity because the 2020 raw export does not preserve a comparable confidence field.}
+\label{tab:app:harmonization}
+\begin{tabular}{rrrrrrrr}
+\toprule
+Year & Submissions & Reviews & Final decisions & Acceptance rate & Score parse rate & Confidence parse rate & Decision parse rate \\
+\midrule
+2018 & 935 & 2784 & 923 & 0.366 & 1.000 & 1.000 & 1.000 \\
+2019 & 1000 & 3057 & 1000 & 0.391 & 1.000 & 1.000 & 1.000 \\
+2020 & 1000 & 3046 & 1000 & 0.313 & 1.000 & 0.000 & 1.000 \\
+2021 & 1000 & 3855 & 1000 & 0.316 & 1.000 & 1.000 & 1.000 \\
+2022 & 1000 & 3899 & 1000 & 0.395 & 1.000 & 1.000 & 1.000 \\
+2023 & 1000 & 3786 & 1000 & 0.407 & 1.000 & 1.000 & 1.000 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Year-specific score and review-text sources used in the harmonized raw-archive parser. The table documents the exact field substitutions needed to make the archive comparable across years, especially the shift from \texttt{rating} to \texttt{recommendation} and the richer multi-field review text available in 2022--2023.}
+\label{tab:app:fieldmap}
+\begin{tabular}{rll}
+\toprule
+Year & Score field & Review-text field \\
+\midrule
+2018 & Rating & Review text \\
+2019 & Rating & Review text \\
+2020 & Rating & Review text \\
+2021 & Rating & Review text \\
+2022 & Recommendation & Paper summary + review summary \\
+2023 & Recommendation & Paper summary + strengths and weaknesses + review summary \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\scriptsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Measurement summary by year. The table reports archive scale, positive recommendation prevalence, parser completeness, manuscript-metadata missingness, and average review length. It shows that the reconstructed archive is large and fairly balanced across years, while also making clear that 2022 uses shorter review-text fields on average and that keyword coverage is imperfect but broadly usable for topic-proxy construction.}
+\label{tab:app:measurementyear}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{rrrrrrrr}
+\toprule
+Year & Submissions & Reviews & Acceptance rate & Positive recommendation share & Confidence parse rate & Keyword missingness & Mean review length (tokens) \\
+\midrule
+2018 & 922 & 2784 & 0.366 & 0.493 & 1.000 & 0.097 & 369.843 \\
+2019 & 1000 & 3057 & 0.391 & 0.520 & 1.000 & 0.074 & 405.720 \\
+2020 & 1000 & 3046 & 0.313 & 0.478 & 0.000 & 0.104 & 412.030 \\
+2021 & 1000 & 3855 & 0.316 & 0.501 & 1.000 & 0.108 & 478.825 \\
+2022 & 1000 & 3899 & 0.395 & 0.507 & 1.000 & 0.138 & 147.583 \\
+2023 & 1000 & 3786 & 0.407 & 0.522 & 1.000 & 0.155 & 398.375 \\
+\bottomrule
+\end{tabular}
+}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Legacy lexicon inventory from the earlier exploratory workflow. These resources are preserved as measurement diagnostics rather than as the manuscript's source of truth. Including them here clarifies what the current rebuild inherited, checked, and simplified when moving from the older exploratory pipeline to the present raw-archive package.}
+\label{tab:app:lexicon}
+\begin{tabular}{lr}
+\toprule
+Lexicon & Entries \\
+\midrule
+Positive sentiment markers & 2449 \\
+Negative sentiment markers & 5504 \\
+AFINN sentiment scores & 2462 \\
+Positive politeness markers & 95 \\
+Negative politeness markers & 11 \\
+Positive politeness phrases & 48 \\
+Negative politeness phrases & 0 \\
+Toxicity words & 5905 \\
+Toxicity phrases & 1141 \\
+Constructive feedback markers & 17 \\
+Constructive feedback phrases & 31 \\
+Hedging words & 41 \\
+Hedging phrases & 16 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\FloatBarrier
+\vspace{0.6em}
+\section*{Appendix: Bridge and Observational Diagnostics}
+The next set of appendix materials expands the observational story by showing how descriptive language gaps behave inside score bins and how the paper-level sentiment association varies across topic-cluster proxies.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{figure3_temporal_stability.pdf}
+\caption{Temporal stability of the descriptive language gap. Accepted-minus-rejected differences are shown separately for sentiment and politeness in each conference year, with pooled summaries shown below the year-specific estimates. The direction of the gap does not reverse in any year for either measure, which is why the main text describes this descriptive pattern as the most stable regularity in the paper.}
+\label{fig:app:temporal}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_score_bridge.pdf}
+\caption{Bridge analysis linking the full-sample descriptive layer to the matched borderline layer. \textbf{A}, acceptance rates across within-year mean-score deciles, with bar color tracking the decision mix of each bin. \textbf{B}, accepted-minus-rejected sentiment gaps within the same score bins. The key pattern is attenuation in the middle of the score distribution, where accepted and rejected papers overlap most plausibly; by contrast, the largest raw differences occur in regions where decisions are already nearly deterministic.}
+\label{fig:app:bridge}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_topic_heterogeneity.pdf}
+\caption{Topic-cluster heterogeneity in the paper-level sentiment association. Topic controls are keyword-based clusters and should be interpreted as noisy topical proxies rather than official research areas. Most topic-specific estimates are imprecise and none reveals an obvious subfield in which the conditional paper-level sentiment association becomes consistently large and positive.}
+\label{fig:app:topichetero}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Average marginal effects from the paper-level fixed-effects model. The outcome is final acceptance. Full models include the broader score, disagreement, confidence, review-structure, manuscript-side, year, and topic controls described in the main text; this table isolates the language dimensions because they are central to the paper's substantive argument.}
+\label{tab:app:paperame}
+\begin{tabular}{lrrr}
+\toprule
+Predictor & Average marginal effect & 95\% CI lower & 95\% CI upper \\
+\midrule
+Paper-level mean review sentiment & -0.002 & -0.017 & 0.014 \\
+Paper-level mean review politeness & -0.011 & -0.024 & 0.003 \\
+Paper-level mean review toxicity & 0.750 & -0.568 & 2.209 \\
+Paper-level mean review constructiveness & -0.009 & -0.020 & 0.003 \\
+Mean reviewer score & 0.262 & 0.254 & 0.270 \\
+Reviewer score disagreement & 0.003 & -0.005 & 0.012 \\
+Mean reviewer confidence & -0.002 & -0.021 & 0.018 \\
+Number of reviews & -0.005 & -0.030 & 0.022 \\
+Mean review length (tokens) & -0.000 & -0.000 & 0.000 \\
+Title length (tokens) & -0.001 & -0.003 & 0.000 \\
+Abstract length (tokens) & -0.000 & -0.000 & 0.000 \\
+Number of keywords & 0.004 & 0.000 & 0.007 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Average marginal effects from the review-level fixed-effects model. The outcome is a positive reviewer recommendation (rating or recommendation score $\ge 6$). As in the main text, the table highlights that review-level sentiment has a much larger association with recommendation than any other tone dimension, which is why the review-level model is treated as the clearest evidence that language tracks reviewer stance.}
+\label{tab:app:reviewame}
+\begin{tabular}{lrrr}
+\toprule
+Predictor & Average marginal effect & 95\% CI lower & 95\% CI upper \\
+\midrule
+Review sentiment & 0.195 & 0.181 & 0.211 \\
+Review politeness & 0.048 & 0.036 & 0.059 \\
+Review toxicity & -0.376 & -0.768 & 0.063 \\
+Review constructiveness & 0.011 & 0.002 & 0.018 \\
+Reviewer confidence & -0.079 & -0.089 & -0.069 \\
+Confidence missingness indicator & 0.004 & -0.136 & 0.153 \\
+Review length (tokens) & -0.000 & -0.000 & -0.000 \\
+Title length (tokens) & -0.004 & -0.007 & -0.001 \\
+Abstract length (tokens) & 0.000 & -0.000 & 0.000 \\
+Number of keywords & 0.002 & -0.002 & 0.008 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Accepted-minus-rejected yearly descriptive gaps for the two main language dimensions discussed in the paper. Sentiment differences are positive in every year and larger than politeness differences throughout, reinforcing the interpretation that evaluative valence rather than generic civility is doing most of the descriptive work.}
+\label{tab:app:yearlygaps}
+\begin{tabular}{lrrrr}
+\toprule
+Language dimension & Year & Mean difference & 95\% CI lower & 95\% CI upper \\
+\midrule
+Sentiment gap & 2018 & 0.186 & 0.139 & 0.233 \\
+Sentiment gap & 2019 & 0.189 & 0.143 & 0.234 \\
+Sentiment gap & 2020 & 0.180 & 0.132 & 0.228 \\
+Sentiment gap & 2021 & 0.123 & 0.082 & 0.165 \\
+Sentiment gap & 2022 & 0.189 & 0.147 & 0.231 \\
+Sentiment gap & 2023 & 0.178 & 0.134 & 0.222 \\
+Politeness gap & 2018 & 0.106 & 0.058 & 0.154 \\
+Politeness gap & 2019 & 0.091 & 0.047 & 0.135 \\
+Politeness gap & 2020 & 0.095 & 0.048 & 0.143 \\
+Politeness gap & 2021 & 0.064 & 0.025 & 0.102 \\
+Politeness gap & 2022 & 0.059 & 0.006 & 0.111 \\
+Politeness gap & 2023 & 0.067 & 0.030 & 0.105 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\scriptsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Within-score-bin bridge diagnostics. Bins are based on the within-year percentile of paper-level mean score. This table underlies the bridge figure and shows numerically that the accepted-minus-rejected sentiment gap is much smaller in the central score bins than in the extreme bins where acceptance is nearly certain or nearly impossible.}
+\label{tab:app:bridge}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrr}
+\toprule
+Score decile & Submissions & Accepted submissions & Rejected submissions & Acceptance rate & Sentiment difference & 95\% CI lower & 95\% CI upper \\
+\midrule
+0-10 & 605 & 0 & 605 & 0.000 & NA & NA & NA \\
+10-20 & 618 & 3 & 615 & 0.005 & -0.038 & -0.410 & 0.334 \\
+20-30 & 573 & 4 & 569 & 0.007 & -0.014 & -0.329 & 0.301 \\
+30-40 & 483 & 22 & 461 & 0.046 & 0.124 & 0.010 & 0.238 \\
+40-50 & 656 & 49 & 607 & 0.075 & 0.054 & -0.027 & 0.135 \\
+50-60 & 544 & 138 & 406 & 0.254 & -0.018 & -0.093 & 0.057 \\
+60-70 & 649 & 295 & 354 & 0.455 & -0.020 & -0.075 & 0.034 \\
+70-80 & 625 & 514 & 111 & 0.822 & -0.094 & -0.145 & -0.043 \\
+80-90 & 645 & 611 & 34 & 0.947 & 0.003 & -0.082 & 0.089 \\
+90-100 & 524 & 523 & 1 & 0.998 & 1.142 & 1.122 & 1.163 \\
+\bottomrule
+\end{tabular}
+}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Year-specific average marginal effects of paper-level sentiment in the paper-level model. The estimates move around zero but do not reveal a year in which the conditional paper-level sentiment association becomes both large and precisely positive.}
+\label{tab:app:heteroyear}
+\begin{tabular}{rrrrl}
+\toprule
+Year & Average marginal effect & 95\% CI lower & 95\% CI upper & Specification note \\
+\midrule
+2018 & 0.015 & -0.044 & 0.073 & Requested specification \\
+2019 & 0.005 & -0.046 & 0.052 & Requested specification \\
+2020 & -0.039 & -0.039 & -0.039 & Requested specification \\
+2021 & 0.024 & -0.030 & 0.074 & Requested specification \\
+2022 & 0.009 & -0.050 & 0.067 & Requested specification \\
+2023 & -0.022 & -0.075 & 0.029 & Requested specification \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Average marginal effects of paper-level sentiment by disagreement tercile. This table complements the main heterogeneity figure by showing numerically that high reviewer disagreement does not produce a markedly larger positive paper-level sentiment effect.}
+\label{tab:app:heterodisagreement}
+\begin{tabular}{lrrrl}
+\toprule
+Reviewer disagreement tier & Average marginal effect & 95\% CI lower & 95\% CI upper & Specification note \\
+\midrule
+Low disagreement & -0.021 & -0.059 & 0.012 & HC1 covariance fallback \\
+Medium disagreement & 0.008 & -0.027 & 0.043 & Requested specification \\
+High disagreement & 0.006 & -0.038 & 0.052 & HC1 covariance fallback \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Average marginal effects of paper-level sentiment by keyword-based topic cluster. Because the topic clusters are deterministic keyword proxies rather than official tracks, the table is best read as a boundary check: it helps rule out the concern that the pooled near-null paper-level estimate is hiding one dominant topic-specific positive effect.}
+\label{tab:app:heterotopic}
+\begin{tabular}{rrrrrl}
+\toprule
+Topic cluster & Submissions & Average marginal effect & 95\% CI lower & 95\% CI upper & Representative keywords \\
+\midrule
+1 & 641 & -0.021 & -0.106 & 0.063 & reinforcement, reinforcement... \\
+2 & 224 & 0.069 & -0.014 & 0.146 & adversarial, robustness, examples,... \\
+3 & 668 & -0.005 & -0.077 & 0.052 & missingkeyword, goal conditioned,... \\
+4 & 2275 & 0.011 & -0.021 & 0.045 & learning, optimization, model,... \\
+5 & 289 & -0.100 & -0.226 & 0.017 & generative, generative models,... \\
+6 & 120 & 0.016 & -0.396 & 0.396 & variational, inference, variational... \\
+7 & 476 & -0.059 & -0.142 & 0.014 & deep learning, deep, learning,... \\
+8 & 78 & 0.050 & -0.175 & 0.282 & federated, federated learning,... \\
+9 & 263 & 0.083 & 0.002 & 0.166 & network, neural network, neural,... \\
+10 & 155 & -0.153 & -0.263 & -0.020 & language, natural language,... \\
+11 & 274 & -0.060 & -0.155 & 0.032 & representation, representation... \\
+12 & 459 & 0.030 & -0.053 & 0.117 & neural networks, networks, neural,... \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_prediction_diagnostics.pdf}
+\caption{Appendix-only predictive diagnostics. \textbf{A}, held-out AUC for the baseline model and the model augmented with paper-level language features. \textbf{B}, incremental gains from adding language on held-out AUC and Brier score by year. Held-out discrimination is already high in the score-based baseline models, and the incremental changes from adding language are tiny in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
+\label{fig:app:prediction}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Appendix-only leave-one-year-out predictive diagnostics. The baseline uses score and manuscript controls; the extended model adds paper-level language features. Held-out AUC is already high in the baseline models, and the incremental changes from adding language are extremely small in absolute magnitude, which is why prediction is treated as a boundary condition rather than as a headline contribution.}
+\label{tab:app:prediction}
+\begin{tabular}{rrrrrr}
+\toprule
+Held-out year & Baseline AUC & AUC with language & AUC change & Log-loss change & Brier-score change \\
+\midrule
+2018 & 0.956 & 0.956 & -0.000 & 0.000 & 0.000 \\
+2019 & 0.963 & 0.963 & 0.000 & -0.001 & -0.000 \\
+2020 & 0.963 & 0.963 & -0.001 & 0.002 & 0.000 \\
+2021 & 0.956 & 0.955 & -0.000 & -0.001 & -0.000 \\
+2022 & 0.955 & 0.956 & 0.000 & -0.001 & -0.000 \\
+2023 & 0.962 & 0.962 & 0.000 & -0.000 & -0.000 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\FloatBarrier
+\vspace{0.6em}
+\section*{Appendix: Matched Observational Diagnostics}
+These appendix materials document overlap, balance, and sample composition for the matched borderline design and its sensitivities.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_psm_overlap.pdf}
+\caption{Propensity-score overlap for the primary borderline specification before and after matching. The matched sample retains substantial overlap while sharpening comparability between the higher-sentiment and lower-sentiment groups. This diagnostic matters because it shows that the near-zero matched estimate is not being produced by an obviously broken common-support region.}
+\label{fig:app:overlap}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Matched observational evidence from the borderline layer. The table reports the primary 35th-65th percentile window, two prespecified window sensitivities, and the top-versus-bottom sentiment-tercile sensitivity check. Across all four designs, estimated sentiment-linked differences in acceptance remain modest and their confidence intervals include differences close to zero, which is why the matched layer is interpreted as conservative validation rather than as the paper's strongest positive result.}
+\label{tab:app:matchingeffects}
+\begin{tabular}{lrrrrr}
+\toprule
+Matching specification & Matched contrast (ATT) & 95\% CI lower & 95\% CI upper & Matched pairs & Balance target met \\
+\midrule
+Primary 35-65 window & 0.004 & -0.037 & 0.043 & 695 & Yes \\
+Window 40-60 & 0.009 & -0.040 & 0.054 & 429 & Yes \\
+Window 30-70 & 0.011 & -0.027 & 0.052 & 850 & Yes \\
+Top vs bottom terciles & -0.054 & -0.109 & 0.000 & 404 & Yes \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Standardized mean differences before and after matching for the primary borderline matched sample. The core balance target is $|SMD| < 0.10$ after matching. The table shows that the largest pre-match imbalance is in mean review length and that this imbalance contracts sharply after matching along with the smaller imbalances in score, disagreement, confidence, and manuscript-side covariates.}
+\label{tab:app:balance}
+\begin{tabular}{lrr}
+\toprule
+Covariate & Absolute SMD before matching & Absolute SMD after matching \\
+\midrule
+Mean reviewer score & 0.030 & 0.009 \\
+Reviewer score disagreement & -0.072 & -0.007 \\
+Mean reviewer confidence & 0.093 & -0.023 \\
+Number of reviews & -0.011 & 0.012 \\
+Mean review length (tokens) & 0.339 & -0.016 \\
+Title length (tokens) & -0.022 & -0.021 \\
+Abstract length (tokens) & -0.006 & 0.007 \\
+Number of keywords & -0.003 & 0.011 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\scriptsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Overlap summaries for the primary and sensitivity matched designs. The table reports the size of the analytic samples, the extent of common support, and the caliper used in each specification so that the reader can evaluate how much overlap is retained as the design window narrows or widens.}
+\label{tab:app:overlap}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrrrl}
+\toprule
+Matching specification & Analytic sample size & Higher-sentiment papers & Lower-sentiment papers & Matched pairs & Common-support lower bound & Common-support upper bound & Caliper & Balance target met \\
+\midrule
+Primary 35-65 window & 1878 & 937 & 941 & 695 & 0.119 & 0.942 & 0.069 & Yes \\
+Window 40-60 & 1200 & 598 & 602 & 429 & 0.169 & 0.941 & 0.065 & Yes \\
+Window 30-70 & 2332 & 1164 & 1168 & 850 & 0.094 & 0.931 & 0.071 & Yes \\
+Top vs bottom terciles & 1256 & 631 & 625 & 404 & 0.085 & 0.931 & 0.099 & Yes \\
+\bottomrule
+\end{tabular}
+}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Matched-pair counts by year for the primary borderline specification. The matched sample is distributed across all six conference years, indicating that the primary matched design is not driven by one unusually well-behaved cohort.}
+\label{tab:app:matchedcounts}
+\begin{tabular}{rr}
+\toprule
+Year & Matched pairs \\
+\midrule
+2018 & 99 \\
+2019 & 105 \\
+2020 & 123 \\
+2021 & 97 \\
+2022 & 138 \\
+2023 & 133 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Deterministic keyword-based topic clusters used as topic fixed effects in the main models. The table is included for transparency because the paper does not claim official area-level stability; instead, these clusters serve as reproducible but noisy controls for topical composition.}
+\label{tab:app:topics}
+\begin{tabular}{rrl}
+\toprule
+Topic cluster & Submissions & Representative keywords \\
+\midrule
+1 & 641 & reinforcement, reinforcement... \\
+2 & 224 & adversarial, robustness, examples,... \\
+3 & 668 & missingkeyword, goal conditioned,... \\
+4 & 2276 & learning, optimization, model,... \\
+5 & 289 & generative, generative models,... \\
+6 & 120 & variational, inference, variational... \\
+7 & 476 & deep learning, deep, learning,... \\
+8 & 78 & federated, federated learning,... \\
+9 & 263 & network, neural network, neural,... \\
+10 & 155 & language, natural language,... \\
+11 & 274 & representation, representation... \\
+12 & 459 & neural networks, networks, neural,... \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\FloatBarrier
+\vspace{0.6em}
+\section*{Appendix: Legacy Diagnostics from Earlier Derived Tables}
+The final appendix section preserves selected outputs from the earlier exploratory derived-table workflow. These materials remain useful as exploratory diagnostics and figure prototypes, but they are not the manuscript's primary evidentiary base.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_legacy_rq1.pdf}
+\caption{Legacy descriptive diagnostics from the earlier derived-table workflow, redrawn here in a cleaner format and retained as exploratory benchmarks for the expanded raw-archive rebuild. Their role is historical rather than inferential: they show that the archive-first package preserves the broad descriptive story while improving traceability and measurement transparency.}
+\label{fig:app:legacyrq1}
+\end{figure}
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_legacy_rq3.pdf}
+\caption{Legacy temporal and subgroup diagnostics from the earlier derived-table workflow, retained as appendix-only materials for comparison with the current archive-first analysis. Their role is archival rather than evidentiary: they show how the present manuscript reorganizes earlier stability patterns into a broader and more auditable design.}
+\label{fig:app:legacyrq3}
+\end{figure}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Legacy multivariable logit benchmark from the earlier derived-table workflow. This table is retained only as a benchmark against the previous pipeline and should not be treated as the manuscript's primary source of inference.}
+\label{tab:app:legacymultivariable}
+\begin{tabular}{lrrrr}
+\toprule
+Predictor & Odds ratio & 95\% CI lower & 95\% CI upper & P-value \\
+\midrule
+Legacy sentiment & 1.683 & 1.574 & 1.799 & 0.000 \\
+Legacy politeness & 1.276 & 1.198 & 1.359 & 0.000 \\
+Legacy toxicity & 1.026 & 0.972 & 1.084 & 0.350 \\
+Legacy constructiveness & 0.867 & 0.815 & 0.922 & 0.000 \\
+Legacy reviews per paper & 0.953 & 0.902 & 1.007 & 0.090 \\
+Legacy review length & 0.795 & 0.749 & 0.844 & 0.000 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\normalsize
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Legacy stability summary from the earlier exploratory workflow. As with the previous legacy table, this summary is included to document continuity with the exploratory stage of the project rather than to substitute for the raw-archive analyses reported in the main text and earlier appendix sections.}
+\label{tab:app:legacymeta}
+\begin{tabular}{lrrl}
+\toprule
+Measure & Pooled effect & I-squared (\%) & Stability pattern \\
+\midrule
+Legacy sentiment & 0.019 & 0.000 & stable (low heterogeneity) \\
+Legacy politeness & 0.089 & 0.000 & stable (low heterogeneity) \\
+Legacy toxicity & 0.031 & 14.410 & stable (low heterogeneity) \\
+Legacy constructiveness & -0.026 & 46.917 & partially stable (moderate heterogeneity) \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+

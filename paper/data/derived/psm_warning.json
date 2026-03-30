@@ -1,0 +1,7 @@
+{
+  "primary_balance_pass": true,
+  "narrow_balance_pass": true,
+  "wide_balance_pass": true,
+  "robust_balance_pass": true,
+  "message": "All matched designs satisfied the |SMD| < 0.10 balance threshold."
+}

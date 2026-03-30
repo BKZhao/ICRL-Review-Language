@@ -1,0 +1,7 @@
+term,label,ame,ci_low,ci_high,model,n,ame_scale,ame_method,year,n_papers,fit_note
+mean_sentiment,Paper-level mean review sentiment,0.015306173572124711,-0.044381714697683455,0.07336165790810048,year:2018,922,0.07034623367409623,draws_scaled,2018,922,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.004754945936361363,-0.046379902192094105,0.05222365054526538,year:2019,1000,0.0684169014289767,draws_scaled,2019,1000,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.038528159080457376,-0.03852815908048507,-0.038528159080429676,year:2020,1000,0.06120693130230454,coef_ci_scaled,2020,1000,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.02355348751468526,-0.029571979226850027,0.07437790106413207,year:2021,1000,0.07156446574512978,draws_scaled,2021,1000,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.008726479731033077,-0.049727318066871994,0.06652428893587849,year:2022,1000,0.08038278165149036,draws_scaled,2022,1000,requested_spec
+mean_sentiment,Paper-level mean review sentiment,-0.021703818306154313,-0.07472895364202405,0.029306659145085255,year:2023,1000,0.07187559914125558,draws_scaled,2023,1000,requested_spec

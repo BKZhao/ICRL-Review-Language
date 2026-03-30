@@ -1,0 +1,9 @@
+variable,label,smd_before,smd_after
+mean_score,Mean reviewer score,0.02984692622114016,0.008911722569935315
+score_std,Reviewer score disagreement,-0.07245918289273019,-0.007285639800066133
+confidence_mean_imputed,Mean reviewer confidence,0.09329087506916289,-0.023137622208919274
+num_reviews,Number of reviews,-0.010843706619502125,0.011879336739477843
+review_length_mean,Mean review length (tokens),0.33926911950721245,-0.015813261758433797
+title_length,Title length (tokens),-0.021771022488513186,-0.020876725652350395
+abstract_length,Abstract length (tokens),-0.0064318373691155725,0.006770288212338165
+keyword_count,Number of keywords,-0.0027544528987096116,0.011358793279468158

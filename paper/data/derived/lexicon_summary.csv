@@ -1,0 +1,14 @@
+lexicon,size
+sentiment_pos_words,2449
+sentiment_neg_words,5504
+afinn_scores,2462
+politeness_pos_words,95
+politeness_neg_words,11
+politeness_pos_phrases,48
+politeness_neg_phrases,0
+toxic_words,5905
+toxic_phrases,1141
+constructive_words,17
+constructive_phrases,31
+hedge_words,41
+hedge_phrases,16

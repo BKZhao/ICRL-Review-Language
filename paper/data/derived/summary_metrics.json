@@ -1,0 +1,47 @@
+{
+  "total_papers": 5922,
+  "total_reviews": 20427,
+  "accept_rate": 0.3645727794663965,
+  "paper_sentiment_ame": -0.0019714140308272963,
+  "review_sentiment_ame": 0.19484692052848238,
+  "matching_att": 0.004316546762589928,
+  "matching_balance_pass": true,
+  "year_summary": [
+    {
+      "year": 2018,
+      "papers": 922,
+      "accept_rate": 0.36550976138828634,
+      "mean_reviews": 3.019522776572668
+    },
+    {
+      "year": 2019,
+      "papers": 1000,
+      "accept_rate": 0.391,
+      "mean_reviews": 3.057
+    },
+    {
+      "year": 2020,
+      "papers": 1000,
+      "accept_rate": 0.313,
+      "mean_reviews": 3.046
+    },
+    {
+      "year": 2021,
+      "papers": 1000,
+      "accept_rate": 0.316,
+      "mean_reviews": 3.855
+    },
+    {
+      "year": 2022,
+      "papers": 1000,
+      "accept_rate": 0.395,
+      "mean_reviews": 3.899
+    },
+    {
+      "year": 2023,
+      "papers": 1000,
+      "accept_rate": 0.407,
+      "mean_reviews": 3.786
+    }
+  ]
+}

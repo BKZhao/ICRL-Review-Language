@@ -1,0 +1,4 @@
+term,label,ame,ci_low,ci_high,model,n,ame_scale,ame_method,disagreement_group,n_papers,fit_note
+mean_sentiment,Paper-level mean review sentiment,-0.02136670849234478,-0.0589257331500998,0.012160619092716441,disagreement_group:Low disagreement,1974,0.06961187625530955,draws_scaled,Low disagreement,1974,fallback_hc1_cov
+mean_sentiment,Paper-level mean review sentiment,0.008376781440497524,-0.027318716508917384,0.04305402473942921,disagreement_group:Medium disagreement,1974,0.04832081884586795,draws_scaled,Medium disagreement,1974,requested_spec
+mean_sentiment,Paper-level mean review sentiment,0.005697541038291462,-0.03769864522630416,0.052071521300486895,disagreement_group:High disagreement,1974,0.09939683874280134,draws_scaled,High disagreement,1974,fallback_hc1_cov
