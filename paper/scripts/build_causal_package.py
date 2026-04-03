@@ -34,6 +34,7 @@ PROJECT_ROOT = ROOT.parent
 ARCHIVE_PATH = PROJECT_ROOT / "DOC" / "archive (1)(1).zip"
 LEGACY_RQ1_PATH = PROJECT_ROOT / "DOC" / "8011_rq1.zip"
 LEGACY_RQ3_PATH = PROJECT_ROOT / "DOC" / "rq1+3.zip"
+EXTERNAL_OUTPUTS_PATH = PROJECT_ROOT / "DOC" / "outputs.zip"
 DATA_DIR = ROOT / "data"
 DERIVED_DIR = DATA_DIR / "derived"
 FIG_DIR = ROOT / "figures"
@@ -115,6 +116,13 @@ PALETTE = {
     "band": "#e4eefc",
     "before": "#9aa7bb",
     "after": "#17766f",
+}
+
+EXTERNAL_FEATURE_LABELS = {
+    "mean_sentiment": "Sentiment",
+    "mean_politeness": "Politeness",
+    "mean_toxicity": "Toxicity",
+    "mean_constructiveness": "Constructiveness",
 }
 
 PAPER_CONTROLS = [
@@ -215,6 +223,15 @@ def read_png_from_zip(zip_path: Path, member: str):
         if member not in archive.namelist():
             return None
         return plt.imread(io.BytesIO(archive.read(member)), format="png")
+
+
+def read_text_from_zip(zip_path: Path, member: str) -> str:
+    if not zip_path.exists():
+        return ""
+    with ZipFile(zip_path) as archive:
+        if member not in archive.namelist():
+            return ""
+        return archive.read(member).decode("utf-8", errors="ignore")
 
 
 def normalize_text(value: object) -> str:
@@ -1676,15 +1693,15 @@ def plot_appendix_measurement_summary(
     )
     axes[0, 1].set_xticks(x)
     axes[0, 1].set_xticklabels(years)
-    axes[0, 1].set_ylim(-0.02, 1.08)
+    axes[0, 1].set_ylim(-0.02, 1.24)
     axes[0, 1].set_title("Measurement completeness by year", loc="left", pad=7, fontweight="bold")
     legend = axes[0, 1].legend(
         frameon=True,
         facecolor=PALETTE["paper"],
         edgecolor="none",
         framealpha=0.94,
-        loc="lower right",
-        bbox_to_anchor=(0.985, 0.02),
+        loc="upper left",
+        bbox_to_anchor=(0.03, 1.01),
         borderaxespad=0.0,
         handletextpad=0.45,
         labelspacing=0.28,
@@ -2045,6 +2062,253 @@ def plot_appendix_topic_heterogeneity(observational: dict[str, pd.DataFrame], to
     save_figure(fig, "appendix_figure_topic_heterogeneity")
 
 
+def plot_appendix_external_patterns() -> None:
+    external = build_external_validation_assets()
+    if not external.get("available"):
+        return
+
+    descriptive = external.get("descriptive_stats", pd.DataFrame()).copy()
+    multivariable = external.get("multivariable_df", pd.DataFrame()).copy()
+    if descriptive.empty or multivariable.empty:
+        return
+
+    features = [
+        "mean_sentiment",
+        "mean_politeness",
+        "mean_toxicity",
+        "mean_constructiveness",
+    ]
+    desc_index = descriptive.set_index("decision_label")
+    rows = []
+    for feature in features:
+        accept_mean = float(desc_index.loc["accept", f"{feature}_mean"])
+        reject_mean = float(desc_index.loc["reject", f"{feature}_mean"])
+        accept_std = float(desc_index.loc["accept", f"{feature}_std"])
+        reject_std = float(desc_index.loc["reject", f"{feature}_std"])
+        accept_n = float(desc_index.loc["accept", f"{feature}_count"])
+        reject_n = float(desc_index.loc["reject", f"{feature}_count"])
+        diff = accept_mean - reject_mean
+        se = math.sqrt((accept_std**2 / accept_n) + (reject_std**2 / reject_n))
+        rows.append(
+            {
+                "feature": feature,
+                "label": EXTERNAL_FEATURE_LABELS.get(feature, feature),
+                "diff": diff,
+                "ci_low": diff - 1.96 * se,
+                "ci_high": diff + 1.96 * se,
+            }
+        )
+    diff_df = pd.DataFrame(rows)
+
+    multi_df = multivariable[multivariable["feature"].isin(features)].copy()
+    if multi_df.empty:
+        return
+    multi_df["label"] = multi_df["feature"].map(lambda value: EXTERNAL_FEATURE_LABELS.get(value, value))
+    multi_df["order"] = multi_df["feature"].map({feature: idx for idx, feature in enumerate(features)})
+    multi_df = multi_df.sort_values("order")
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(7.35, 3.55),
+        constrained_layout=True,
+        gridspec_kw={"width_ratios": [1.05, 1.05]},
+    )
+
+    y0 = np.arange(len(diff_df))[::-1]
+    axes[0].axvline(0, color=PALETTE["muted"], linewidth=1.0, linestyle="--")
+    axes[0].errorbar(
+        diff_df["diff"],
+        y0,
+        xerr=[diff_df["diff"] - diff_df["ci_low"], diff_df["ci_high"] - diff_df["diff"]],
+        fmt="none",
+        ecolor=PALETTE["ink"],
+        elinewidth=1.4,
+        capsize=2.5,
+        zorder=2,
+    )
+    axes[0].scatter(
+        diff_df["diff"],
+        y0,
+        color=[PALETTE["accent"] if value >= 0 else PALETTE["reject"] for value in diff_df["diff"]],
+        s=34,
+        zorder=3,
+    )
+    axes[0].set_yticks(y0)
+    axes[0].set_yticklabels(diff_df["label"])
+    axes[0].set_xlabel("Accepted - rejected mean difference")
+    axes[0].set_title("PeerRead descriptive language contrasts", loc="left", pad=7, fontweight="bold")
+    axes[0].grid(axis="x", alpha=0.35)
+    add_panel_label(axes[0], "A")
+
+    y1 = np.arange(len(multi_df))[::-1]
+    axes[1].axvline(1.0, color=PALETTE["muted"], linewidth=1.0, linestyle="--")
+    axes[1].errorbar(
+        multi_df["odds_ratio"],
+        y1,
+        xerr=[multi_df["odds_ratio"] - multi_df["or_ci_low"], multi_df["or_ci_high"] - multi_df["odds_ratio"]],
+        fmt="o",
+        color=PALETTE["accent"],
+        ecolor=PALETTE["ink"],
+        elinewidth=1.4,
+        capsize=2.5,
+    )
+    axes[1].set_yticks(y1)
+    axes[1].set_yticklabels(multi_df["label"])
+    axes[1].set_xlabel("Odds ratio")
+    axes[1].set_title("PeerRead multivariable language coefficients", loc="left", pad=7, fontweight="bold")
+    axes[1].grid(axis="x", alpha=0.35)
+    add_panel_label(axes[1], "B")
+
+    save_figure(fig, "appendix_figure_external_patterns")
+
+
+def plot_appendix_external_transport() -> None:
+    external = build_external_validation_assets()
+    if not external.get("available"):
+        return
+
+    rq2 = external.get("rq2_df", pd.DataFrame()).copy()
+    cross_domain = external.get("cross_domain_df", pd.DataFrame()).copy()
+    if rq2.empty or cross_domain.empty:
+        return
+
+    rq2_row = rq2.iloc[0]
+    cross_idx = cross_domain.set_index("model_name")
+    cross_plot = pd.DataFrame(
+        [
+            {
+                "label": "Baseline",
+                "auc": float(cross_idx.loc["baseline_with_time_control", "auc"]),
+                "color": PALETTE["muted"],
+            },
+            {
+                "label": "With language",
+                "auc": float(cross_idx.loc["with_language_with_time_control", "auc"]),
+                "color": PALETTE["accent"],
+            },
+        ]
+    )
+
+    fig, axes = plt.subplots(
+        1,
+        2,
+        figsize=(7.35, 3.55),
+        constrained_layout=True,
+        gridspec_kw={"width_ratios": [1.05, 0.95]},
+    )
+
+    metric_positions = np.arange(2)
+    metric_labels = [r"Pseudo-$R^2$", "AUC"]
+    base_values = [float(rq2_row["Base_R2"]), float(rq2_row["Base_AUC"])]
+    full_values = [float(rq2_row["Full_R2"]), float(rq2_row["Full_AUC"])]
+    for idx, (base_val, full_val) in enumerate(zip(base_values, full_values)):
+        axes[0].plot(
+            [idx, idx],
+            [base_val, full_val],
+            color=PALETTE["muted"],
+            linewidth=1.2,
+            zorder=1,
+        )
+        axes[0].scatter(idx, base_val, color=PALETTE["muted"], s=34, zorder=3)
+        axes[0].scatter(idx, full_val, color=PALETTE["accent"], s=34, zorder=3)
+        delta = full_val - base_val
+        axes[0].text(
+            idx,
+            max(base_val, full_val) + 0.007,
+            f"{delta:+.4f}",
+            ha="center",
+            va="bottom",
+            fontsize=7.9,
+            color=PALETTE["ink"],
+        )
+    axes[0].set_xticks(metric_positions)
+    axes[0].set_xticklabels(metric_labels)
+    axes[0].set_ylabel("Metric value")
+    axes[0].set_ylim(min(base_values + full_values) - 0.025, max(base_values + full_values) + 0.035)
+    axes[0].set_title("Incremental fit from adding language", loc="left", pad=7, fontweight="bold")
+    axes[0].legend(
+        handles=[
+            Line2D([0], [0], marker="o", lw=0, color=PALETTE["muted"], label="Baseline controls"),
+            Line2D([0], [0], marker="o", lw=0, color=PALETTE["accent"], label="Controls + language"),
+        ],
+        frameon=False,
+        loc="upper left",
+        bbox_to_anchor=(0.02, 0.98),
+        borderaxespad=0.0,
+    )
+    axes[0].grid(axis="y", alpha=0.35)
+    add_panel_label(axes[0], "A")
+
+    x = np.arange(len(cross_plot))
+    auc_values = cross_plot["auc"].to_numpy(dtype=float)
+    y_pad = max((auc_values.max() - auc_values.min()) * 0.9, 0.0045)
+    axes[1].plot(x, auc_values, color=PALETTE["grid"], linewidth=1.8, zorder=1)
+    axes[1].scatter(
+        x,
+        auc_values,
+        color=cross_plot["color"],
+        s=54,
+        edgecolor=PALETTE["paper"],
+        linewidth=0.8,
+        zorder=3,
+    )
+    axes[1].set_xticks(x)
+    axes[1].set_xticklabels(cross_plot["label"])
+    axes[1].set_ylabel("ICLR to PeerRead AUC")
+    axes[1].set_ylim(auc_values.min() - y_pad * 0.65, auc_values.max() + y_pad * 1.25)
+    for idx, value in enumerate(auc_values):
+        axes[1].text(idx, value + y_pad * 0.18, f"{value:.4f}", ha="center", va="bottom", fontsize=8.0)
+    axes[1].legend(
+        handles=[
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                lw=0,
+                markerfacecolor=PALETTE["muted"],
+                markeredgecolor=PALETTE["paper"],
+                markeredgewidth=0.8,
+                markersize=6.4,
+                label="Baseline",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                lw=0,
+                markerfacecolor=PALETTE["accent"],
+                markeredgecolor=PALETTE["paper"],
+                markeredgewidth=0.8,
+                markersize=6.4,
+                label="With language",
+            ),
+        ],
+        frameon=False,
+        loc="upper left",
+        bbox_to_anchor=(0.02, 0.98),
+        borderaxespad=0.0,
+    )
+    axes[1].text(
+        0.98,
+        0.03,
+        (
+            f"Language-by-source LRT = {external['rq3_lrt_stat']:.2f}\n"
+            f"df = {external['rq3_lrt_df']}, p = {external['rq3_lrt_p']:.2e}"
+        ),
+        transform=axes[1].transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=7.8,
+        bbox={"boxstyle": "round,pad=0.25", "facecolor": PALETTE["shade"], "edgecolor": PALETTE["grid"]},
+    )
+    axes[1].set_title("Cross-domain prediction boundary check", loc="left", pad=7, fontweight="bold")
+    axes[1].grid(axis="y", alpha=0.35)
+    add_panel_label(axes[1], "B")
+
+    save_figure(fig, "appendix_figure_external_transport")
+
+
 def plot_appendix_legacy_rq1_montage(legacy_assets: dict[str, pd.DataFrame]) -> None:
     descriptive = legacy_assets.get("legacy_descriptive_stats", pd.DataFrame()).copy()
     tests = legacy_assets.get("legacy_univariate_group_tests", pd.DataFrame()).copy()
@@ -2274,6 +2538,219 @@ def format_number(value: float, digits: int = 3) -> str:
     if value is None or (isinstance(value, float) and math.isnan(value)):
         return "NA"
     return f"{value:.{digits}f}"
+
+
+def format_signed_number(value: float, digits: int = 3) -> str:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return "NA"
+    return f"{value:+.{digits}f}"
+
+
+def format_pvalue_latex(value: float, digits: int = 3) -> str:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return "NA"
+    value = float(value)
+    if value < 1e-4:
+        coeff, exponent = f"{value:.1e}".split("e")
+        return f"$p = {coeff} \\times 10^{{{int(exponent)}}}$"
+    return f"$p = {value:.{digits}f}$"
+
+
+def format_pvalue_text(value: float, digits: int = 3) -> str:
+    if value is None or (isinstance(value, float) and math.isnan(value)):
+        return "NA"
+    value = float(value)
+    if value < 1e-4:
+        return f"{value:.2e}"
+    return f"{value:.{digits}f}"
+
+
+def build_external_validation_assets(zip_path: Path = EXTERNAL_OUTPUTS_PATH) -> dict[str, object]:
+    if not zip_path.exists():
+        return {"available": False, "reason": f"Missing archive: {zip_path}"}
+
+    descriptive = read_csv_from_zip(zip_path, "outputs/rq1/descriptive_stats.csv")
+    ingest = read_csv_from_zip(zip_path, "outputs/rq1/peerread_ingest_summary.csv")
+    univariate = read_csv_from_zip(zip_path, "outputs/rq1/univariate_group_tests.csv")
+    multivariable = read_csv_from_zip(zip_path, "outputs/rq1/multivariable_logit.csv")
+    rq2 = read_csv_from_zip(zip_path, "outputs/rq2/pooled_r2_auc_comparison.csv")
+    shapley = read_csv_from_zip(zip_path, "outputs/rq2/shapley_relative_importance.csv")
+    descriptive_source = read_csv_from_zip(zip_path, "outputs/rq3/descriptive_by_source.csv")
+    interaction_lrt = read_csv_from_zip(zip_path, "outputs/rq3/interaction_model_source_lrt.csv")
+    cross_domain = read_csv_from_zip(zip_path, "outputs/rq3/cross_domain_iclr_to_peerread.csv")
+    stratified_source = read_csv_from_zip(zip_path, "outputs/rq3/stratified_logit_by_source.csv")
+
+    essential = [descriptive, ingest, univariate, multivariable, rq2, descriptive_source, interaction_lrt, cross_domain]
+    if any(frame.empty for frame in essential):
+        return {"available": False, "reason": "One or more required PeerRead external-validation outputs are empty."}
+
+    peerread_row = descriptive_source[descriptive_source["source_domain"] == "peerread"]
+    if peerread_row.empty:
+        return {"available": False, "reason": "PeerRead summary row missing from descriptive_by_source.csv."}
+    peerread_row = peerread_row.iloc[0]
+
+    univariate_idx = univariate.set_index("feature")
+    multivariable_idx = multivariable.set_index("feature")
+    rq2_row = rq2.iloc[0]
+    lrt_row = interaction_lrt.iloc[0]
+    cross_idx = cross_domain.set_index("model_name")
+    peerread_source_idx = pd.DataFrame()
+    if not stratified_source.empty:
+        peerread_source = stratified_source[stratified_source["source_domain"] == "peerread"].copy()
+        if not peerread_source.empty:
+            peerread_source_idx = peerread_source.set_index("feature")
+
+    retained = ingest[ingest["papers_kept_for_eval"].fillna(0) > 0].copy()
+    subset_label_map = {
+        "iclr_2017": "ICLR 2017",
+        "acl_2017": "ACL 2017",
+        "conll_2016": "CoNLL 2016",
+        "arxiv.cs.ai_2007-2017": "arXiv cs.AI",
+        "arxiv.cs.cl_2007-2017": "arXiv cs.CL",
+        "arxiv.cs.lg_2007-2017": "arXiv cs.LG",
+    }
+    retained_subsets = "; ".join(
+        f"{subset_label_map.get(str(row['subset']), str(row['subset']))} ({int(row['papers_kept_for_eval'])})"
+        for _, row in retained.iterrows()
+    )
+    zero_kept = ingest[ingest["papers_kept_for_eval"].fillna(0) == 0]["subset"].tolist()
+    dropped_subsets = ", ".join(subset_label_map.get(str(value), str(value)) for value in zero_kept)
+
+    code_text = read_text_from_zip(zip_path, "peerread_eval_common.py")
+    has_acl_title_inference = "acl_accepted_title_list" in code_text
+
+    baseline_auc = float(cross_idx.loc["baseline_with_time_control", "auc"])
+    language_auc = float(cross_idx.loc["with_language_with_time_control", "auc"])
+
+    summary_table = pd.DataFrame(
+        [
+            {
+                "External validation diagnostic": "Usable papers with both review text and a decision label",
+                "Estimate": f"{int(peerread_row['n_papers'])}",
+            },
+            {
+                "External validation diagnostic": "Retained subsets",
+                "Estimate": retained_subsets,
+            },
+            {
+                "External validation diagnostic": "Acceptance rate",
+                "Estimate": f"{100 * float(peerread_row['acceptance_rate']):.1f}%",
+            },
+            {
+                "External validation diagnostic": "Year coverage",
+                "Estimate": (
+                    f"{int(peerread_row['year_min'])} only"
+                    if int(peerread_row["year_nunique"]) == 1
+                    else f"{int(peerread_row['year_min'])}-{int(peerread_row['year_max'])}"
+                ),
+            },
+            {
+                "External validation diagnostic": "Accepted minus rejected sentiment difference",
+                "Estimate": (
+                    f"{format_signed_number(float(univariate_idx.loc['mean_sentiment', 'mean_diff_accept_minus_reject']), 3)} "
+                    f"(p = {float(univariate_idx.loc['mean_sentiment', 't_pvalue']):.2e})"
+                ),
+            },
+            {
+                "External validation diagnostic": "Sentiment odds ratio in the external multivariable logit",
+                "Estimate": (
+                    f"{format_number(float(multivariable_idx.loc['mean_sentiment', 'odds_ratio']), 3)} "
+                    f"(95% CI {format_number(float(multivariable_idx.loc['mean_sentiment', 'or_ci_low']), 3)} to "
+                    f"{format_number(float(multivariable_idx.loc['mean_sentiment', 'or_ci_high']), 3)})"
+                ),
+            },
+            {
+                "External validation diagnostic": "Incremental fit from adding language",
+                "Estimate": (
+                    f"Delta R2 = {format_number(float(rq2_row['Delta_R2']), 4)}; "
+                    f"Delta AUC = {format_number(float(rq2_row['Delta_AUC']), 4)}; "
+                    f"LRT p = {format_number(float(rq2_row['LRT_pvalue']), 3)}"
+                ),
+            },
+            {
+                "External validation diagnostic": "Language-by-source interaction test",
+                "Estimate": (
+                    f"LRT = {format_number(float(lrt_row['lrt_stat']), 2)}, "
+                    f"df = {int(round(float(lrt_row['lrt_df_diff'])))}"
+                    f", p = {float(lrt_row['lrt_pvalue']):.2e}"
+                ),
+            },
+            {
+                "External validation diagnostic": "ICLR to PeerRead AUC",
+                "Estimate": (
+                    f"{format_number(baseline_auc, 4)} baseline; "
+                    f"{format_number(language_auc, 4)} with language"
+                ),
+            },
+        ]
+    )
+
+    return {
+        "available": True,
+        "sample_n": int(peerread_row["n_papers"]),
+        "acceptance_rate": float(peerread_row["acceptance_rate"]),
+        "year_nunique": int(peerread_row["year_nunique"]),
+        "year_min": int(peerread_row["year_min"]),
+        "year_max": int(peerread_row["year_max"]),
+        "retained_subsets": retained_subsets,
+        "dropped_subsets": dropped_subsets,
+        "has_acl_title_inference": has_acl_title_inference,
+        "descriptive_stats": descriptive,
+        "univariate_df": univariate,
+        "multivariable_df": multivariable,
+        "rq2_df": rq2,
+        "shapley_df": shapley,
+        "cross_domain_df": cross_domain,
+        "sentiment_diff": float(univariate_idx.loc["mean_sentiment", "mean_diff_accept_minus_reject"]),
+        "sentiment_diff_p": float(univariate_idx.loc["mean_sentiment", "t_pvalue"]),
+        "politeness_diff": float(univariate_idx.loc["mean_politeness", "mean_diff_accept_minus_reject"]),
+        "politeness_diff_p": float(univariate_idx.loc["mean_politeness", "t_pvalue"]),
+        "toxicity_diff": float(univariate_idx.loc["mean_toxicity", "mean_diff_accept_minus_reject"]),
+        "toxicity_diff_p": float(univariate_idx.loc["mean_toxicity", "t_pvalue"]),
+        "constructiveness_diff": float(univariate_idx.loc["mean_constructiveness", "mean_diff_accept_minus_reject"]),
+        "constructiveness_diff_p": float(univariate_idx.loc["mean_constructiveness", "t_pvalue"]),
+        "sentiment_or": float(multivariable_idx.loc["mean_sentiment", "odds_ratio"]),
+        "sentiment_or_low": float(multivariable_idx.loc["mean_sentiment", "or_ci_low"]),
+        "sentiment_or_high": float(multivariable_idx.loc["mean_sentiment", "or_ci_high"]),
+        "sentiment_or_p": float(multivariable_idx.loc["mean_sentiment", "pvalue"]),
+        "politeness_or": float(multivariable_idx.loc["mean_politeness", "odds_ratio"]),
+        "politeness_or_p": float(multivariable_idx.loc["mean_politeness", "pvalue"]),
+        "toxicity_or": float(multivariable_idx.loc["mean_toxicity", "odds_ratio"]),
+        "toxicity_or_p": float(multivariable_idx.loc["mean_toxicity", "pvalue"]),
+        "constructiveness_or": float(multivariable_idx.loc["mean_constructiveness", "odds_ratio"]),
+        "constructiveness_or_p": float(multivariable_idx.loc["mean_constructiveness", "pvalue"]),
+        "rq2_delta_r2": float(rq2_row["Delta_R2"]),
+        "rq2_delta_auc": float(rq2_row["Delta_AUC"]),
+        "rq2_lrt_p": float(rq2_row["LRT_pvalue"]),
+        "rq2_control_set": str(rq2_row["Control_Set"]),
+        "rq3_lrt_stat": float(lrt_row["lrt_stat"]),
+        "rq3_lrt_df": int(round(float(lrt_row["lrt_df_diff"]))),
+        "rq3_lrt_p": float(lrt_row["lrt_pvalue"]),
+        "cross_domain_auc_baseline": baseline_auc,
+        "cross_domain_auc_language": language_auc,
+        "peerread_source_model_available": not peerread_source_idx.empty,
+        "peerread_source_sentiment_coef": (
+            float(peerread_source_idx.loc["mean_sentiment_std", "coef"])
+            if not peerread_source_idx.empty and "mean_sentiment_std" in peerread_source_idx.index
+            else np.nan
+        ),
+        "peerread_source_politeness_coef": (
+            float(peerread_source_idx.loc["mean_politeness_std", "coef"])
+            if not peerread_source_idx.empty and "mean_politeness_std" in peerread_source_idx.index
+            else np.nan
+        ),
+        "peerread_source_toxicity_coef": (
+            float(peerread_source_idx.loc["mean_toxicity_std", "coef"])
+            if not peerread_source_idx.empty and "mean_toxicity_std" in peerread_source_idx.index
+            else np.nan
+        ),
+        "peerread_source_constructiveness_coef": (
+            float(peerread_source_idx.loc["mean_constructiveness_std", "coef"])
+            if not peerread_source_idx.empty and "mean_constructiveness_std" in peerread_source_idx.index
+            else np.nan
+        ),
+        "summary_table": summary_table,
+    }
 
 
 def write_numbers_tex(
@@ -2808,6 +3285,7 @@ def write_appendix_tables(
         columns={"topic_cluster": "Topic cluster", "n_papers": "Submissions", "top_terms": "Representative keywords"}
     ).copy()
     topic_short_display = cast_display_ints(topic_short_display, ["Topic cluster", "Submissions"])
+    external_validation = build_external_validation_assets()
     prediction_display = prediction_df.rename(
         columns={
             "heldout_year": "Held-out year",
@@ -2819,6 +3297,281 @@ def write_appendix_tables(
         }
     ).copy()
     prediction_display = cast_display_ints(prediction_display, ["Held-out year"])
+
+    external_sections: list[str] = [
+        "\\FloatBarrier",
+        "\\vspace{0.6em}",
+        "\\section*{Appendix: External Validation on PeerRead}",
+    ]
+    if external_validation.get("available"):
+        sample_n = int(external_validation["sample_n"])
+        acceptance_rate = 100 * float(external_validation["acceptance_rate"])
+        year_min = int(external_validation["year_min"])
+        year_max = int(external_validation["year_max"])
+        year_nunique = int(external_validation["year_nunique"])
+        year_scope = f"{year_min}" if year_nunique == 1 else f"{year_min}--{year_max}"
+        summary_table = external_validation["summary_table"]
+        external_univariate = external_validation["univariate_df"].copy()
+        external_univariate = external_univariate[
+            external_univariate["feature"].isin(list(EXTERNAL_FEATURE_LABELS.keys()))
+        ].copy()
+        external_univariate["feature_order"] = external_univariate["feature"].map(
+            {feature: idx for idx, feature in enumerate(EXTERNAL_FEATURE_LABELS.keys())}
+        )
+        external_univariate = external_univariate.sort_values("feature_order")
+        external_univariate["t_pvalue"] = external_univariate["t_pvalue"].map(format_pvalue_text)
+        external_univariate_display = external_univariate.rename(
+            columns={
+                "feature": "Language dimension",
+                "accept_mean": "Accepted mean",
+                "reject_mean": "Rejected mean",
+                "mean_diff_accept_minus_reject": "Accepted - rejected difference",
+                "t_pvalue": "T-test p-value",
+            }
+        ).copy()
+        external_univariate_display["Language dimension"] = external_univariate_display["Language dimension"].map(
+            lambda value: EXTERNAL_FEATURE_LABELS.get(value, value)
+        )
+
+        external_multivariable = external_validation["multivariable_df"].copy()
+        external_multivariable = external_multivariable[
+            external_multivariable["feature"].isin(list(EXTERNAL_FEATURE_LABELS.keys()))
+        ].copy()
+        external_multivariable["feature_order"] = external_multivariable["feature"].map(
+            {feature: idx for idx, feature in enumerate(EXTERNAL_FEATURE_LABELS.keys())}
+        )
+        external_multivariable = external_multivariable.sort_values("feature_order")
+        external_multivariable["pvalue"] = external_multivariable["pvalue"].map(format_pvalue_text)
+        external_multivariable_display = external_multivariable.rename(
+            columns={
+                "feature": "Language dimension",
+                "odds_ratio": "Odds ratio",
+                "or_ci_low": "95% CI lower",
+                "or_ci_high": "95% CI upper",
+                "pvalue": "P-value",
+            }
+        ).copy()
+        external_multivariable_display["Language dimension"] = external_multivariable_display["Language dimension"].map(
+            lambda value: EXTERNAL_FEATURE_LABELS.get(value, value)
+        )
+
+        source_pattern_sentence = ""
+        if external_validation.get("peerread_source_model_available"):
+            source_pattern_sentence = (
+                " The source-specific PeerRead model shows the same sign pattern, with "
+                "positive standardized coefficients for sentiment, politeness, and "
+                "toxicity, and a negative coefficient for constructiveness."
+            )
+
+        external_sections.extend(
+            [
+                (
+                    "To assess out-of-domain transportability beyond the ICLR 2018--2023 "
+                    "archive, we re-estimated the external RQ1--RQ3 workflow packaged in "
+                    "the replication materials on PeerRead using the same "
+                    "\\texttt{extract\\_text\\_features} measurement pipeline for "
+                    "sentiment, politeness, toxicity, and constructiveness. We interpret "
+                    "this appendix as a robustness and boundary check rather than as "
+                    "causal identification."
+                ),
+                "",
+                latex_figure_from_file(
+                    "appendix_figure_external_patterns.pdf",
+                    (
+                        "PeerRead external-validation language patterns. \\textbf{A}, "
+                        "accepted-minus-rejected differences for the four transferred "
+                        "language measures, with approximate 95\\% confidence intervals "
+                        "computed from the external descriptive summaries. \\textbf{B}, "
+                        "odds ratios and 95\\% confidence intervals from the external "
+                        "multivariable logit. The figure shows that sentiment remains the "
+                        "largest positive external association, while constructiveness is "
+                        "negative in both descriptive and conditional comparisons."
+                    ),
+                    "fig:app:peerreadpatterns",
+                ),
+                "\\noindent\\textbf{A. Data scope and measurement transfer.} "
+                + (
+                    f"The usable external sample contains {sample_n} papers with both "
+                    "non-meta review text and a binary decision label "
+                    f"(acceptance rate: {acceptance_rate:.1f}\\%). All retained cases come "
+                    f"from {external_validation['retained_subsets']}, so the usable "
+                    f"external sample is effectively limited to {year_scope}. "
+                    + (
+                        "For ACL 2017, decisions are inferred from the provided "
+                        "accepted-title list, which the evaluation code records "
+                        "explicitly as \\texttt{acl\\_accepted\\_title\\_list}. "
+                        if external_validation["has_acl_title_inference"]
+                        else ""
+                    )
+                    + (
+                        f"By contrast, {external_validation['dropped_subsets']} contribute "
+                        "no usable decision-plus-text cases to the appendix."
+                        if external_validation["dropped_subsets"]
+                        else ""
+                    )
+                ),
+                "",
+                "\\noindent\\textbf{B. External RQ1 replication: descriptive and "
+                "conditional contrasts.} "
+                + (
+                    "In the external sample, accepted papers still receive more positive "
+                    "review language than rejected papers "
+                    f"(accepted--rejected difference = {format_signed_number(external_validation['sentiment_diff'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['sentiment_diff_p'])}). "
+                    "The accepted-minus-rejected differences are smaller for politeness "
+                    f"({format_signed_number(external_validation['politeness_diff'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['politeness_diff_p'])}) and "
+                    "toxicity "
+                    f"({format_signed_number(external_validation['toxicity_diff'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['toxicity_diff_p'])}), "
+                    "while constructiveness is lower among accepted papers "
+                    f"({format_signed_number(external_validation['constructiveness_diff'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['constructiveness_diff_p'])}). "
+                    "In the external multivariable logit, sentiment remains the strongest "
+                    "positive language coefficient "
+                    f"(odds ratio = {format_number(external_validation['sentiment_or'], 3)}, "
+                    f"95\\% CI [{format_number(external_validation['sentiment_or_low'], 3)}, "
+                    f"{format_number(external_validation['sentiment_or_high'], 3)}], "
+                    f"{format_pvalue_latex(external_validation['sentiment_or_p'])}). "
+                    "The external model does not collapse to a sentiment-only story, "
+                    "however: politeness "
+                    f"(odds ratio = {format_number(external_validation['politeness_or'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['politeness_or_p'])}) and "
+                    "toxicity "
+                    f"(odds ratio = {format_number(external_validation['toxicity_or'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['toxicity_or_p'])}) are also "
+                    "positive, whereas constructiveness is negative "
+                    f"(odds ratio = {format_number(external_validation['constructiveness_or'], 3)}, "
+                    f"{format_pvalue_latex(external_validation['constructiveness_or_p'])})."
+                ),
+                "",
+                latex_table_from_df(
+                    external_univariate_display,
+                    [
+                        "Language dimension",
+                        "Accepted mean",
+                        "Rejected mean",
+                        "Accepted - rejected difference",
+                        "T-test p-value",
+                    ],
+                    (
+                        "PeerRead univariate contrasts by final decision. The table reports "
+                        "accepted and rejected means together with their differences for the "
+                        "four transferred language measures."
+                    ),
+                    "tab:app:peerreadunivariate",
+                    "lrrrr",
+                    float_fmt={
+                        "Accepted mean": 3,
+                        "Rejected mean": 3,
+                        "Accepted - rejected difference": 3,
+                    },
+                    size="small",
+                ),
+                latex_table_from_df(
+                    external_multivariable_display,
+                    ["Language dimension", "Odds ratio", "95% CI lower", "95% CI upper", "P-value"],
+                    (
+                        "PeerRead multivariable logit coefficients for the four language "
+                        "measures. Odds ratios are reported from the external RQ1 model "
+                        "that conditions on review-count and review-length controls."
+                    ),
+                    "tab:app:peerreadmultivariable",
+                    "lrrrr",
+                    float_fmt={"Odds ratio": 3, "95% CI lower": 3, "95% CI upper": 3},
+                    size="small",
+                ),
+                "",
+                "\\noindent\\textbf{C. External RQ2 replication: incremental explanatory "
+                "value under time controls.} "
+                + (
+                    "The external RQ2 comparison is close to, but not identical with, the "
+                    "main paper-level specification: the baseline conditions on mean "
+                    "score, score disagreement, review count, and time/venue controls "
+                    f"({latex_escape(external_validation['rq2_control_set'])}), and then "
+                    "adds the four language measures. Under this comparison, language adds "
+                    "little incremental fit "
+                    f"($\\Delta R^2 = {format_number(external_validation['rq2_delta_r2'], 4)}$; "
+                    f"$\\Delta$AUC = {format_number(external_validation['rq2_delta_auc'], 4)}; "
+                    f"{format_pvalue_latex(external_validation['rq2_lrt_p'])} for the "
+                    "likelihood-ratio test). This pattern is consistent with the main "
+                    "manuscript's interpretation that review language is descriptively "
+                    "meaningful but adds limited independent discrimination once stronger "
+                    "evaluation proxies are already observed."
+                ),
+                "",
+                "\\noindent\\textbf{D. External RQ3 checks: cross-domain stability and "
+                "interaction diagnostics.} "
+                + (
+                    "In pooled models combining ICLR and PeerRead, the language-by-source "
+                    "interactions are jointly significant "
+                    f"($LRT = {format_number(external_validation['rq3_lrt_stat'], 2)}$, "
+                    f"$df = {external_validation['rq3_lrt_df']}$, "
+                    f"{format_pvalue_latex(external_validation['rq3_lrt_p'])}), indicating "
+                    "non-trivial domain heterogeneity in the language-outcome mapping."
+                    + source_pattern_sentence
+                    + " Yet this heterogeneity does not translate into better "
+                    "out-of-domain discrimination: when training on ICLR and testing on "
+                    "PeerRead, adding language leaves AUC essentially unchanged and "
+                    "slightly worse in point estimate "
+                    f"({format_number(external_validation['cross_domain_auc_baseline'], 4)} "
+                    "baseline versus "
+                    f"{format_number(external_validation['cross_domain_auc_language'], 4)} "
+                    "with language). Together, these diagnostics indicate limited "
+                    "transportability of fine-grained language effects across review "
+                    "ecosystems."
+                ),
+                "",
+                latex_figure_from_file(
+                    "appendix_figure_external_transport.pdf",
+                    (
+                        "PeerRead external-validation fit and transportability diagnostics. "
+                        "\\textbf{A}, baseline versus language-augmented model fit for the "
+                        "external RQ2 comparison, showing only very small gains in pseudo-"
+                        "$R^2$ and AUC. \\textbf{B}, cross-domain prediction from ICLR to "
+                        "PeerRead, where adding language does not improve AUC in practical "
+                        "terms; the inset reports the pooled source-interaction likelihood-"
+                        "ratio test from the external RQ3 diagnostics."
+                    ),
+                    "fig:app:peerreadtransport",
+                ),
+                "\\noindent\\textbf{E. Interpretation boundary.} "
+                + (
+                    "Because the usable PeerRead sample is effectively "
+                    f"{year_scope}-only, the external appendix cannot support strong "
+                    "within-PeerRead temporal trend claims. We therefore interpret this "
+                    "section as an out-of-domain stress test that sharpens cautionary "
+                    "conclusions about transportability rather than as a second setting "
+                    "that independently identifies the same effect."
+                ),
+                "",
+                latex_table_from_df(
+                    summary_table,
+                    ["External validation diagnostic", "Estimate"],
+                    (
+                        "Summary of the PeerRead external-validation appendix. The table "
+                        "condenses the main transportability diagnostics reported in the "
+                        "text and is intended as a boundary-check summary rather than as a "
+                        "standalone inferential table."
+                    ),
+                    "tab:app:peerreadexternal",
+                    align="p{0.56\\textwidth}p{0.33\\textwidth}",
+                    size="small",
+                    resize_to_width=True,
+                ),
+            ]
+        )
+    else:
+        external_sections.extend(
+            [
+                (
+                    "The PeerRead external-validation appendix could not be regenerated "
+                    "from the local replication bundle. "
+                    + latex_escape(str(external_validation.get("reason", "Required outputs were unavailable.")))
+                ),
+                "",
+            ]
+        )
 
     sections = [
         "\\FloatBarrier",
@@ -3272,6 +4025,7 @@ def write_appendix_tables(
             "tab:app:topics",
             "rrl",
         ),
+        *external_sections,
         "\\FloatBarrier",
         "\\vspace{0.6em}",
         "\\section*{Appendix: Legacy Exploratory Materials}",
@@ -3469,6 +4223,8 @@ def refresh_outputs_from_tables(
     plot_appendix_psm_overlap(match_results)
     plot_appendix_prediction_diagnostics(prediction_df)
     plot_appendix_topic_heterogeneity(observational, topic_df)
+    plot_appendix_external_patterns()
+    plot_appendix_external_transport()
     if draw_legacy_figures:
         plot_appendix_legacy_rq1_montage(legacy_assets)
         plot_appendix_legacy_rq3_montage(legacy_assets)

@@ -13,18 +13,19 @@
 
 \title{Do Review Comments Matter? Review Language and Acceptance at ICLR}
 
-\author[a,1]{Author Placeholder1}
-\author[b,2]{Author Placeholder2}
+\author[a]{Bingkun Zhao}
+\author[a]{Tiexin Li}
+\author[a]{Xinpeng Li}
+\author[a]{Siyuan Li}
+\author[a]{Hongxiao Wu}
 
-\affil[a]{Affiliation placeholder}
-\affil[b]{Affiliation placeholder}
+\affil[a]{Department of Data Science, City University of Hong Kong, Hong Kong SAR}
 
-\leadauthor{Placeholder}
+\leadauthor{Bingkun Zhao}
 \significancestatement{Peer-review archives preserve more than ratings and final decisions: they also preserve the language through which scientific judgments are rendered. Reconstructing the raw ICLR archive shows that accepted papers receive more positive review language and that review-level sentiment closely aligns with favorable recommendations. Yet once scores, disagreement, confidence, and manuscript-side controls are observed, language contributes little additional predictive value for final acceptance. The result reframes review text as an evaluative trace that is socially meaningful and institutionally important, while cautioning against claims that language alone is a powerful hidden driver of scientific selection.}
 \authorcontributions{Author contributions placeholder: this draft should be updated with the final contribution statement before submission.}
 \authordeclaration{The authors declare no competing interest in this draft.}
-\equalauthors{Author placeholder note: authorship ordering and equal-contribution statements remain to be finalized.}
-\correspondingauthor{Correspondence should be addressed to the project team after author metadata are finalized.}
+\correspondingauthor{Correspondence should be addressed to Bingkun Zhao.}
 \keywords{peer review | computational social science | OpenReview | research evaluation | machine learning}
 
 \begin{abstract}
@@ -40,6 +41,8 @@ Peer review is both a scoring system and a language-mediated institution, yet la
 \pagestyle{plain}
 
 Scientific evaluation is rendered through language before it is reduced to a binary decision. Reviewers praise, hedge, criticize, and justify, turning local judgments into text that authors, editors, and later observers can inspect \cite{walker2015peerreview,tennant2017innovations}. Open peer-review platforms make that communicative layer unusually visible because they preserve the documentary surface of evaluation rather than only the terminal verdict \cite{openreview2026iclr}. For computational social science, such archives are valuable precisely because they expose scientific selection as a social process expressed in words as well as numbers \cite{lazer2009computational}. More broadly, recent work on scientific language suggests that wording can shape how merit is signaled and perceived, making peer-review discourse a substantive object of study rather than editorial residue \cite{stavrova2025promotional}.
+
+Prior peer-review scholarship can be organized into three strands. First, historical and synthetic accounts establish peer review as a central but imperfect institution and summarize long-running concerns about quality control and evaluative consistency \cite{spier2002history,smith2006flawed,jefferson2002effects,bornmann2011scientific}. Second, randomized editorial experiments test concrete design levers, including masking, openness, reviewer signing, and reviewer training, and generally find mixed but policy-relevant effects rather than a single dominant intervention \cite{vanrooyen1998blinding,godlee1998signing,justice1998masking,black1998goodreviewer,vanrooyen1999open,schroter2004training}. Third, meta-research and contemporary field studies document reliability limits, reviewer-supply frictions, procedural decision rules, and heterogeneous fairness patterns under open or double-blind protocols \cite{bornmann2010reliability,bornmann2010manuscript,tite2007decline,rosshellauer2017open,bravo2019effect,tomkins2017reviewerbias,sun2022doubleblind,budden2008doubleblind,squazzoni2021gender,helmer2017gender}. This study builds on that literature but asks a different question: in a fully reconstructed open-review AI archive, does linguistic framing add substantial paper-level acceptance information once the broader score-based evaluation profile is already observed?
 
 That visibility creates an empirical puzzle. Review language may matter because it frames evidence, emphasizes strengths, softens criticism, and makes recommendations legible. But it is also easy to overread. More positive wording may simply accompany stronger papers; politeness may coexist with rejection in professional settings; toxicity may be too rare to structure outcomes; and constructive critique may intensify exactly when reviewers are unconvinced. Because text and scores are co-produced in the same evaluative encounter, observational archives are well suited to documenting alignment between language and outcomes but are less suited to claims that wording itself independently drives acceptance.
 

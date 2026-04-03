@@ -500,6 +500,106 @@ Topic cluster & Submissions & Representative keywords \\
 
 \FloatBarrier
 \vspace{0.6em}
+\section*{Appendix: External Validation on PeerRead}
+To assess out-of-domain transportability beyond the ICLR 2018--2023 archive, we re-estimated the external RQ1--RQ3 workflow packaged in the replication materials on PeerRead using the same \texttt{extract\_text\_features} measurement pipeline for sentiment, politeness, toxicity, and constructiveness. We interpret this appendix as a robustness and boundary check rather than as causal identification.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_external_patterns.pdf}
+\caption{PeerRead external-validation language patterns. \textbf{A}, accepted-minus-rejected differences for the four transferred language measures, with approximate 95\% confidence intervals computed from the external descriptive summaries. \textbf{B}, odds ratios and 95\% confidence intervals from the external multivariable logit. The figure shows that sentiment remains the largest positive external association, while constructiveness is negative in both descriptive and conditional comparisons.}
+\label{fig:app:peerreadpatterns}
+\end{figure}
+
+\noindent\textbf{A. Data scope and measurement transfer.} The usable external sample contains 564 papers with both non-meta review text and a binary decision label (acceptance rate: 48.0\%). All retained cases come from ICLR 2017 (427); ACL 2017 (137), so the usable external sample is effectively limited to 2017. For ACL 2017, decisions are inferred from the provided accepted-title list, which the evaluation code records explicitly as \texttt{acl\_accepted\_title\_list}. By contrast, CoNLL 2016, arXiv cs.AI, arXiv cs.CL, arXiv cs.LG contribute no usable decision-plus-text cases to the appendix.
+
+\noindent\textbf{B. External RQ1 replication: descriptive and conditional contrasts.} In the external sample, accepted papers still receive more positive review language than rejected papers (accepted--rejected difference = +0.125, $p = 4.0 \times 10^{-11}$). The accepted-minus-rejected differences are smaller for politeness (+0.008, $p = 0.029$) and toxicity (+0.008, $p = 0.002$), while constructiveness is lower among accepted papers (-0.043, $p = 0.001$). In the external multivariable logit, sentiment remains the strongest positive language coefficient (odds ratio = 1.811, 95\% CI [1.459, 2.249], $p = 7.3 \times 10^{-8}$). The external model does not collapse to a sentiment-only story, however: politeness (odds ratio = 1.347, $p = 0.006$) and toxicity (odds ratio = 1.360, $p = 0.002$) are also positive, whereas constructiveness is negative (odds ratio = 0.623, $p = 3.9 \times 10^{-6}$).
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{PeerRead univariate contrasts by final decision. The table reports accepted and rejected means together with their differences for the four transferred language measures.}
+\label{tab:app:peerreadunivariate}
+\begin{tabular}{lrrrr}
+\toprule
+Language dimension & Accepted mean & Rejected mean & Accepted - rejected difference & T-test p-value \\
+\midrule
+Sentiment & 0.627 & 0.502 & 0.125 & 3.99e-11 \\
+Politeness & 0.744 & 0.736 & 0.008 & 0.029 \\
+Toxicity & 0.058 & 0.050 & 0.008 & 0.002 \\
+Constructiveness & 0.370 & 0.413 & -0.043 & 0.001 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{PeerRead multivariable logit coefficients for the four language measures. Odds ratios are reported from the external RQ1 model that conditions on review-count and review-length controls.}
+\label{tab:app:peerreadmultivariable}
+\begin{tabular}{lrrrr}
+\toprule
+Language dimension & Odds ratio & 95\% CI lower & 95\% CI upper & P-value \\
+\midrule
+Sentiment & 1.811 & 1.459 & 2.249 & 7.30e-08 \\
+Politeness & 1.347 & 1.091 & 1.662 & 0.006 \\
+Toxicity & 1.360 & 1.118 & 1.654 & 0.002 \\
+Constructiveness & 0.623 & 0.509 & 0.761 & 3.93e-06 \\
+\bottomrule
+\end{tabular}
+\endgroup
+\end{table}
+
+
+\noindent\textbf{C. External RQ2 replication: incremental explanatory value under time controls.} The external RQ2 comparison is close to, but not identical with, the main paper-level specification: the baseline conditions on mean score, score disagreement, review count, and time/venue controls (year\_fe=True;venue\_fe=True;period=True), and then adds the four language measures. Under this comparison, language adds little incremental fit ($\Delta R^2 = 0.0053$; $\Delta$AUC = 0.0016; $p = 0.388$ for the likelihood-ratio test). This pattern is consistent with the main manuscript's interpretation that review language is descriptively meaningful but adds limited independent discrimination once stronger evaluation proxies are already observed.
+
+\noindent\textbf{D. External RQ3 checks: cross-domain stability and interaction diagnostics.} In pooled models combining ICLR and PeerRead, the language-by-source interactions are jointly significant ($LRT = 125.33$, $df = 4$, $p = 3.9 \times 10^{-26}$), indicating non-trivial domain heterogeneity in the language-outcome mapping. The source-specific PeerRead model shows the same sign pattern, with positive standardized coefficients for sentiment, politeness, and toxicity, and a negative coefficient for constructiveness. Yet this heterogeneity does not translate into better out-of-domain discrimination: when training on ICLR and testing on PeerRead, adding language leaves AUC essentially unchanged and slightly worse in point estimate (0.7287 baseline versus 0.7277 with language). Together, these diagnostics indicate limited transportability of fine-grained language effects across review ecosystems.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.98\linewidth]{appendix_figure_external_transport.pdf}
+\caption{PeerRead external-validation fit and transportability diagnostics. \textbf{A}, baseline versus language-augmented model fit for the external RQ2 comparison, showing only very small gains in pseudo-$R^2$ and AUC. \textbf{B}, cross-domain prediction from ICLR to PeerRead, where adding language does not improve AUC in practical terms; the inset reports the pooled source-interaction likelihood-ratio test from the external RQ3 diagnostics.}
+\label{fig:app:peerreadtransport}
+\end{figure}
+
+\noindent\textbf{E. Interpretation boundary.} Because the usable PeerRead sample is effectively 2017-only, the external appendix cannot support strong within-PeerRead temporal trend claims. We therefore interpret this section as an out-of-domain stress test that sharpens cautionary conclusions about transportability rather than as a second setting that independently identifies the same effect.
+
+\begin{table}[!htbp]
+\centering
+\begingroup
+\small
+\renewcommand{\arraystretch}{1.20}
+\setlength{\tabcolsep}{6pt}
+\caption{Summary of the PeerRead external-validation appendix. The table condenses the main transportability diagnostics reported in the text and is intended as a boundary-check summary rather than as a standalone inferential table.}
+\label{tab:app:peerreadexternal}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{p{0.56\textwidth}p{0.33\textwidth}}
+\toprule
+External validation diagnostic & Estimate \\
+\midrule
+Usable papers with both review text and a decision label & 564 \\
+Retained subsets & ICLR 2017 (427); ACL 2017 (137) \\
+Acceptance rate & 48.0\% \\
+Year coverage & 2017 only \\
+Accepted minus rejected sentiment difference & +0.125 (p = 3.99e-11) \\
+Sentiment odds ratio in the external multivariable logit & 1.811 (95\% CI 1.459 to 2.249) \\
+Incremental fit from adding language & Delta R2 = 0.0053; Delta AUC = 0.0016; LRT p = 0.388 \\
+Language-by-source interaction test & LRT = 125.33, df = 4, p = 3.88e-26 \\
+ICLR to PeerRead AUC & 0.7287 baseline; 0.7277 with language \\
+\bottomrule
+\end{tabular}
+}
+\endgroup
+\end{table}
+
+\FloatBarrier
+\vspace{0.6em}
 \section*{Appendix: Legacy Exploratory Materials}
 The final appendix section preserves selected outputs from the earlier derived-table workflow. These materials remain useful as exploratory benchmarks and historical prototypes, but they are not the manuscript's primary evidentiary base.
 
